@@ -1,0 +1,2 @@
+env = Environment(tools = ['default', 'gsc'], toolpath = ['tools'])
+env.GambitLoadableLibrary(env, 'm', Split('m1.c m2.scm m3.scm'))
