@@ -1,5 +1,5 @@
-SCons-Gambit
+scons-chicken
 ============
 
-SCons-Gambit is an add-on for SCons (http://www.scons.org), a building system (much like make and autotools, all in one), that adds support for Gambit (http://www.iro.umontreal.ca/~gambit/), a Scheme-to-C compiler.
-To learn how to use SCons-Gambit, check out the examples directories. The modules there are the ones in Gambit's manual, but automatized by SCons.
+scons-chicken is an add-on for SCons (http://www.scons.org), a building system (much like make and autotools, all in one), that adds support for Chicken (http://www.call-with-current-continuation.org/), a Scheme-to-C compiler.
+To learn how to use scons-chicken, check out the examples directories.

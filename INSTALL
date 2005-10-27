@@ -1,5 +1,5 @@
 Install
 =======
 
-To install scons-gambit copy (or link or symlink) gsc.py to the Tool directory of SCons, in my case it is /usr/lib/scons/SCons/.
-A better installation procedure would be nice, but if gsc.py is included on SCons, then it will not be needed.
+To install scons-chicken copy (or link or symlink) chicken.py to the Tool directory of SCons, in my case it is /usr/lib/scons/SCons/.
+A better installation procedure would be nice, but if chicken.py is included on SCons, then it will not be needed.

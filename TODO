@@ -1,3 +1,1 @@
-- Test if macosx is the right string to test when compiling for the MacOSX platform.
-
-- Add support for Gambit shared libraries.
+- Everything, almost.
