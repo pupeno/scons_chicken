@@ -2,4 +2,5 @@ Install
 =======
 
 To install scons-chicken copy (or link or symlink) chicken.py to the Tool directory of SCons, in my case it is /usr/lib/scons/SCons/.
+Then you have to add 'chicken' to other_tools on /usr/lib/scons/SCons/Tool/__init__.py.
 A better installation procedure would be nice, but if chicken.py is included on SCons, then it will not be needed.

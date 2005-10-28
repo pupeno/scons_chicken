@@ -10,18 +10,15 @@
 # You should have received a copy of the GNU General Public License along with this program; if not, write to the Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 
 import SCons.Tool
-import SCons.Util
-import SCons.Action
-import SCons.Builder
-import os.path
-from subprocess import *
 
 def generate(env):
-    env['CHICKEN'] = env.Detect('chicken') or 'chicken'
-    
-    # Builder to compile a .scm file into a .c file.
-    env.Chicken = SCons.Builder.Builder(action = '$CHICKEN $SOURCE -output-file $TARGET')
+    c_file, cxx_file = SCons.Tool.createCFileBuilders(env)
 
+    c_file.add_action('.scm', SCons.Action.Action("$CHICKENCOM"))
+
+    env['CHICKEN'] = env.Detect('chicken') or 'chicken'
+    env['CHICKENFLAGS'] = SCons.Util.CLVar('')
+    env['CHICKENCOM'] = '$CHICKEN $SOURCE -output-file $TARGET'
 
 def exists(env):
     return env.Detect(['chicken'])
