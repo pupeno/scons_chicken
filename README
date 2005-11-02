@@ -1,5 +1,5 @@
 scons-chicken
-============
+=============
 
 scons-chicken is an add-on for SCons (http://www.scons.org), a building system (much like make and autotools, all in one), that adds support for Chicken (http://www.call-with-current-continuation.org/), a Scheme-to-C compiler.
 To learn how to use scons-chicken, check out the examples directories.

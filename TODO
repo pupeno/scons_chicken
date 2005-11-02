@@ -1,1 +1,6 @@
-- Everything, almost.
+- Use SConstruct to install chicken.py where it goes in the same way as anything would be installed. After all I am especifing to load chicken.py anyway on every SConstruct that I make. That way I won't need to include a tools directory on every project, just depend on scons-chicken.
+- Separate the examples on directories.
+- Make the library example be a full extension that can be installed and all.
+- Let the program example be a full program that can be installed and all.
+- Push this repository and publish.
+- Release scons-chicken 0.1.0 when there's nothing else to do above this line.

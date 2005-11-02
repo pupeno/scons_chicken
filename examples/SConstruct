@@ -1,8 +1,0 @@
-lib = Environment(tools = ['default', 'chicken'], toolpath = ['../'])
-lib.ParseConfig('chicken-config -libs -cflags -shared')
-lib['SHLIBPREFIX'] = ''
-lib.SharedLibrary('bar.scm')
-
-prg = Environment(tools = ['default', 'chicken'], toolpath = ['../'])
-prg.ParseConfig('chicken-config -libs -cflags')
-prg.Program('foo.scm')
