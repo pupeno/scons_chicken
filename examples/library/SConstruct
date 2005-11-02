@@ -7,6 +7,15 @@
 # scons-chicken is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License for more details.
 # You should have received a copy of the GNU General Public License along with scons-chicken; if not, write to the Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA
 
+import os
+from string import strip
+
 lib = Environment(tools = ['default', 'chicken'], toolpath = ['../'])
+
 lib.ParseConfig('chicken-config -libs -cflags -shared')
-lib.SharedLibrary('bar.scm', SHLIBPREFIX = '')
+
+scle = lib.SharedLibrary('scons-chicken-library-example.scm', SHLIBPREFIX = '')
+
+chickenLibHome = strip(os.popen('chicken-config -lib-home').read().split('=', 1)[1]) + '/'
+lib.Install(chickenLibHome, scle)
+lib.Alias('install', chickenLibHome)
