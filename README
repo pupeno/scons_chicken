@@ -2,4 +2,16 @@ scons-chicken
 =============
 
 scons-chicken is an add-on for SCons (http://www.scons.org), a building system (much like make and autotools, all in one), that adds support for Chicken (http://www.call-with-current-continuation.org/), a Scheme-to-C compiler.
+
+Installation
+------------
+
+To install it you'll need SCons (http://www.scons.org) and all you need is to run:
+ scons install
+and it will install chicken.py on /usr/lib/scons/Scons/Tool/. If you installed SCons somewhere else, edit SConstruct and fix.
+If you know of a better fix that will work no matter where you installed SCons (that is, something that will automatically find out where to place chicken.py), then, please, tell me about it (pupeno@pupeno.com).
+
+Usage
+-----
+
 To learn how to use scons-chicken, check out the examples directories.
