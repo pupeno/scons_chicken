@@ -8,6 +8,8 @@
 # You should have received a copy of the GNU General Public License along with scons-chicken; if not, write to the Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA
 
 import SCons.Tool
+import os
+from string import strip
 
 def generate(env):
     c_file, cxx_file = SCons.Tool.createCFileBuilders(env)
@@ -17,8 +19,8 @@ def generate(env):
     env['CHICKEN'] = env.Detect('chicken') or 'chicken'
     env['CHICKENFLAGS'] = SCons.Util.CLVar('')
     env['CHICKENCOM'] = '$CHICKEN $SOURCE -output-file $TARGET'
-	 
-	 
+
+    env['CHICKENLIBHOME'] = strip(os.popen('chicken-config -lib-home').read().split('=', 1)[1]) + '/'
 
 def exists(env):
     return env.Detect(['chicken'])
