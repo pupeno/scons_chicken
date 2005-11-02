@@ -19,6 +19,8 @@ def generate(env):
     env['CHICKEN'] = env.Detect('chicken') or 'chicken'
     env['CHICKENFLAGS'] = SCons.Util.CLVar('')
     env['CHICKENCOM'] = '$CHICKEN $SOURCE -output-file $TARGET'
+	 
+	 
 
 def exists(env):
     return env.Detect(['chicken'])

@@ -1,2 +1,0 @@
-env = Environment(tools = ['default', 'gsc'], toolpath = ['../../'])
-env.GambitProgram(env, 'm', Split('m1.c m2.scm m3.scm'))
