@@ -7,11 +7,21 @@
 # scons-chicken is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License for more details.
 # You should have received a copy of the GNU General Public License along with scons-chicken; if not, write to the Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA
 
-lib = Environment(tools = ['default', 'chicken'], toolpath = ['../../'])
+env = Environment(tools = ['default', 'chicken'])
 
-lib.ParseConfig('chicken-config -libs -cflags -shared')
+env.ParseConfig('chicken-config -libs -cflags -shared')
 
-scle = lib.SharedLibrary('scons-chicken-library-example.scm', SHLIBPREFIX = '')
+conf = env.Configure(custom_tests = {'CheckChicken' : env.CheckChicken})
 
-lib.Install(lib['CHICKENLIBHOME'], scle)
-lib.Alias('install', lib['CHICKENLIBHOME'])
+if not conf.CheckChicken():
+    print "It seems you don't have Chicken installed or it is not"
+    print "installed correctly. For more information:"
+    print "http://www.call-with-current-continuation.org/"
+    exit(1)
+
+env = conf.Finish()
+
+scle = env.SharedLibrary('scons-chicken-library-example.scm', SHLIBPREFIX = '')
+
+env.Install(env['CHICKENLIBHOME'], scle)
+env.Alias('install', env['CHICKENLIBHOME'])
