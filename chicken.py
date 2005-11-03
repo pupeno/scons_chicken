@@ -54,9 +54,16 @@ def generate(env):
         if kw.has_key('requires'):
             setup += makeLispList("requires", kw('requires'))
 
-        setup += ")"
-        print setup
-        return setup        
+        setup += ")\n"
+
+        if(isinstance(target, list)):
+            target = target[0]
+
+        setupFile = open(target, 'w')
+        setupFile.write(setup)
+        setupFile.close()
+
+        return env.File(target)
 
     env.ChickenSetup = ChickenSetup
 

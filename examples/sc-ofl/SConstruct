@@ -21,10 +21,12 @@ if not conf.CheckChicken():
 
 env = conf.Finish()
 
-scle = env.SharedLibrary("scons-chicken-library-example.scm", SHLIBPREFIX = "")
+scofl = env.SharedLibrary("sc-ofl.scm", SHLIBPREFIX = "")
 
-setup = env.ChickenSetup(env, "scons-chicken-library-example.setup",
-                         "scons-chicken-library-example.so")
+setup = env.ChickenSetup(env, "sc-ofl.setup", "sc-ofl.so")
 
-env.Install(env['CHICKENREPOSITORY'], scle)
+env.Clean(scofl, setup)
+
+env.Install(env['CHICKENREPOSITORY'], scofl)
+env.Install(env['CHICKENREPOSITORY'], setup)
 env.Alias('install', env['CHICKENREPOSITORY'])
