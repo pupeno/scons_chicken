@@ -30,6 +30,38 @@ def generate(env):
 
     env.CheckChicken = CheckChicken
 
+    def ChickenSetup(env, target, source, *args, **kw):
+        def makeLispList(head, items, prefix = ""):
+            l = "(" + head
+            if isinstance(items, list):
+                for i in items:
+                    l += " \"" + prefix + i + "\" "
+            else:
+                l += "\"" + prefix + items + "\""
+                l += ")"
+            return l
+            
+        setup = "("
+        
+        setup += makeLispList("files", source, env['CHICKENREPOSITORY'])
+
+        if kw.has_key('documentation'):
+            setup += "\n(documentation \"" + kw['documentation'] + "\")"
+
+        if kw.has_key('syntax') and kw('syntax') == True:
+            setup += "\n(syntax)"
+
+        if kw.has_key('requires'):
+            setup += makeLispList("requires", kw('requires'))
+
+        setup += ")"
+        print setup
+        return setup        
+
+    env.ChickenSetup = ChickenSetup
+
+        
+
 def exists(env):
     return env.Detect(['chicken'])
 
