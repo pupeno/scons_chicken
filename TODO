@@ -1,5 +1,7 @@
-- Clean up sc-ofp and create sc-tfl and sc-tfp.
-- Explain the examples. Add READMEs.
+- Finish the examples.
+	- Take a look at sc-mfl.
+	- Make sc-mfp depending on sc-mfl.
+	- Change the source code of sc-ofp to identify itself.
 - Make the library example be a full extension that can be installed and all. ALMOST DONE.
 - Make a scanner to look for (include blah) http://www.scons.org/doc/HTML/scons-user/c2244.html
 - Release scons-chicken 0.1.0 when there's nothing else to do above this line.
