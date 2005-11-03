@@ -18,9 +18,17 @@ def generate(env):
 
     env['CHICKEN'] = env.Detect('chicken') or 'chicken'
     env['CHICKENFLAGS'] = SCons.Util.CLVar('')
-    env['CHICKENCOM'] = '$CHICKEN $SOURCE -output-file $TARGET'
+    env['CHICKENCOM'] = '$CHICKEN $CHICKENFLAGS $SOURCE -output-file $TARGET'
 
     env['CHICKENLIBHOME'] = strip(os.popen('chicken-config -lib-home').read().split('=', 1)[1]) + '/'
 
+    
 def exists(env):
     return env.Detect(['chicken'])
+
+# A procedure to check if we can build .scm with Chicken.
+def CheckChicken(context):
+    context.Message("Checking for Chicken... ")
+    result = context.TryRun("(+ 1 2)", ".scm")
+    context.Result(result[0])
+    return result[0]
