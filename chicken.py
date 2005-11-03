@@ -20,7 +20,7 @@ def generate(env):
     env['CHICKENFLAGS'] = SCons.Util.CLVar('')
     env['CHICKENCOM'] = '$CHICKEN $CHICKENFLAGS $SOURCE -output-file $TARGET'
 
-    env['CHICKENLIBHOME'] = strip(os.popen('chicken-config -lib-home').read().split('=', 1)[1]) + '/'
+    env['CHICKENREPOSITORY'] = strip(os.popen('chicken-setup -repository').read()) + '/'
     
     def CheckChicken(context):
         context.Message("Checking for Chicken... ")

@@ -23,5 +23,8 @@ env = conf.Finish()
 
 scle = env.SharedLibrary('scons-chicken-library-example.scm', SHLIBPREFIX = '')
 
-env.Install(env['CHICKENLIBHOME'], scle)
-env.Alias('install', env['CHICKENLIBHOME'])
+setup = env.ChickenSetup(env, "scons-chicken-library-example.setup",
+                         "scons-chicken-library-example.so")
+
+env.Install(env['CHICKENREPOSITORY'], scle)
+env.Alias('install', env['CHICKENREPOSITORY'])
