@@ -16,6 +16,6 @@ Usage
 
 To learn how to use scons-chicken, check out the examples directories.
 sc-ofl: scons-chicken one-file-library
-sc-tfl: scons-chicken two-file-library (depends on sc-ofl)
+sc-mfl: scons-chicken multiple-file-library (depends on sc-ofl)
 sc-ofp: scons-chicken one-file-program
-sc-tfp: scons-chicken two-file-program (depends on sc-tfl)
+sc-mfp: scons-chicken multiple-file-program (depends on sc-tfl)
