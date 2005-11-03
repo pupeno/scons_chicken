@@ -1,0 +1,41 @@
+# -*- coding: utf-8 -*-
+# Copyright (C) 2005 José Pablo Ezequiel "Pupeno" Fernández Silva
+#
+# This file is part of scons-chicken.
+#
+# scons-chicken is free software; you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation; either version 2 of the License, or (at your option) any later version.
+# scons-chicken is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License for more details.
+# You should have received a copy of the GNU General Public License along with scons-chicken; if not, write to the Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA
+
+env = Environment(tools = ["default", "chicken"], toolpath=["../../"])
+
+env.ParseConfig('chicken-config -libs -cflags -shared')
+
+conf = env.Configure(custom_tests = {'CheckChicken' : env.CheckChicken})
+
+if not conf.CheckChicken():
+    print "It seems you don't have Chicken installed or it is not"
+    print "installed correctly. For more information:"
+    print "http://www.call-with-current-continuation.org/"
+    exit(1)
+
+env = conf.Finish()
+
+scmfl1 = env.SharedLibrary("sc-mfl1",
+                          ["sc-mfl1.scm", "sc-mfl3.scm"],
+                          SHLIBPREFIX = "")
+scmfl2 = env.SharedLibrary("sc-mfl2",
+                          ["sc-mfl2.scm", "sc-mfl4.scm"],
+                          SHLIBPREFIX = "")
+
+setup = env.ChickenSetup(env, 
+                         "sc-mfl.setup",
+                         ["sc-mfl1.so", "sc-mfl2.so"],
+                         requires="sc-ofl")
+
+env.Clean(scmfl1, setup)
+
+env.Install(env['CHICKENREPOSITORY'], scmfl1)
+env.Install(env['CHICKENREPOSITORY'], scmfl2)
+env.Install(env['CHICKENREPOSITORY'], setup)
+env.Alias('install', env['CHICKENREPOSITORY'])

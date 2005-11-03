@@ -38,7 +38,7 @@ def generate(env):
                     l += " \"" + prefix + i + "\" "
             else:
                 l += "\"" + prefix + items + "\""
-                l += ")"
+            l += ")" 
             return l
             
         setup = "("
@@ -52,7 +52,7 @@ def generate(env):
             setup += "\n(syntax)"
 
         if kw.has_key('requires'):
-            setup += makeLispList("requires", kw('requires'))
+            setup += "\n" + makeLispList("requires", kw['requires'])
 
         setup += ")\n"
 
