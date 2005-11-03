@@ -9,4 +9,4 @@
 (declare (unit sc-ofl))
 
 (define (sc-ofl)
-  (display "Hello from sc-ofl, the scons-chicke one-file-library."))
+  (display "Hello from sc-ofl, the scons-chicken one-file-library."))
