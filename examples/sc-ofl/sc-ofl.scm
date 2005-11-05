@@ -7,6 +7,10 @@
 ;;;; You should have received a copy of the GNU General Public License along with scons-chicken; if not, write to the Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA
 
 (declare (unit sc-ofl))
+(declare (export sc-ofl-proc))
 
-(define (sc-ofl)
-  (display "Hello from sc-ofl, the scons-chicken one-file-library."))
+;;; An example of a procedure defined in a library/extension that will be called by other programs and extensions.
+;;; It is called sc-ofl-proc to avoid confusion/overlaping with the extension itself.
+(define (sc-ofl-proc)
+  (display "Hello from sc-ofl, the scons-chicken one-file-library.")
+  (newline))
