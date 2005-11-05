@@ -20,12 +20,11 @@
 
 ;;; Find requirements returns a list of all the extensions that are required by the files (sources) passed as arguments.
 (define (find-all-requirements file-names)
-  (cond
-   ((null? file-names) null)
-   (else
-    (let ((file-name (car file-names)))
-      (display (format "Findind the requirements of ~s.~%" file-name))
-      (display (call-with-input-file file-name extension-names)) (newline)))))
+  (if (null? file-names) 
+      '()
+      (let ((file-name (car file-names)))
+	(append (call-with-input-file file-name extension-names)
+		(find-all-requirements (cdr file-names))))))
 
 ;;; All parameters are files.
 (define files (cdr (argv)))
