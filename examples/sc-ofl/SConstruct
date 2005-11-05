@@ -44,7 +44,7 @@ scofl = env.SharedLibrary("sc-ofl.scm", SHLIBPREFIX = "")
 # documentation = Where is the HTML documentation.
 # syntax = Whether (true or false) this contain syntax extensions.
 # requires = other or list of other required extensions. 
-setup = env.ChickenSetup(env, "sc-ofl.setup", "sc-ofl.so")
+setup = env.ChickenSetup(env, "sc-ofl.setup", scofl)
 
 # Delete the .setup when deleting scofl.
 env.Clean(scofl, setup)

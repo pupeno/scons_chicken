@@ -26,7 +26,6 @@ if not conf.CheckChicken():
     print "http://www.call-with-current-continuation.org/"
     exit(1)
 
-
 # Add your specific checks here!
 
 # Finished checking.

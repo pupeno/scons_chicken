@@ -55,12 +55,27 @@ def generate(env):
                 will form the Lisp-like list.
                 Prefix is an optional parameter that will be prepended to each item
                 on the list."""
+
+            def buildPath(item):
+                """ Procedure that builds a path using the prefix and a string or
+                    File object."""
+                if isinstance(item, str):
+                    return prefix + item
+                elif isinstance(item, list):
+                    return prefix + str(item[0])
+                else:
+                    print "Type not recognized to build .setup file"
+                    return ""
+                
+                
             l = "(" + head
+            
             if isinstance(items, list):
                 for i in items:
-                    l += " \"" + prefix + i + "\" "
+                    l += " \"" + buildPath(i) + "\" "
             else:
-                l += " \"" + prefix + items + "\""
+                l += " \"" + buildPath(items) + "\""
+                
             l += ")" 
             return l
 

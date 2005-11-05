@@ -52,7 +52,7 @@ scmfl2 = env.SharedLibrary("sc-mfl2",
 # requires = other or list of other required extensions. 
 setup = env.ChickenSetup(env, 
                          "sc-mfl.setup",
-                         ["sc-mfl1.so", "sc-mfl2.so"],
+                         [scmfl1, scmfl2],
                          requires="sc-ofl")
 
 # Delete the setup file when cleaning (scmfl1).
