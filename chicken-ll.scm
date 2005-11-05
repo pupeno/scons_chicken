@@ -8,6 +8,7 @@
 
 (declare (uses srfi-1))
 
+;;; Returns a list of all the names of the extensions being used by the source code that is get from the port file-port (to be used with call-with-input-file).
 (define (extension-names file-port)
   (let process-form ((form (read file-port)))
     (if (eof-object? form)
