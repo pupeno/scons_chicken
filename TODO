@@ -1,3 +1,4 @@
+- Make chicken-ll also process inculded files.
 - Document:
 	- All the SConstruct files.
 - Finish the examples:

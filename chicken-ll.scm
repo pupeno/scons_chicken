@@ -8,12 +8,13 @@
 
 (declare (uses srfi-1))
 
-(define (get-declares file-port)
+(define (extension-names file-port)
   (let process-form ((form (read file-port)))
     (if (eof-object? form)
 	'()
-	(if (eqv? (car form) 'declare)
-	    (cons form (process-form (read file-port)))
+	(if (and (eqv? (car form) 'declare)
+		 (eqv? (caadr form) 'uses))
+	    (append (cdadr form) (process-form (read file-port)))
 	    (process-form (read file-port))))))
 
 ;;; Find requirements returns a list of all the extensions that are required by the files (sources) passed as arguments.
@@ -23,7 +24,7 @@
    (else
     (let ((file-name (car file-names)))
       (display (format "Findind the requirements of ~s.~%" file-name))
-      (display (call-with-input-file file-name get-declares)) (newline)))))
+      (display (call-with-input-file file-name extension-names)) (newline)))))
 
 ;;; All parameters are files.
 (define files (cdr (argv)))
