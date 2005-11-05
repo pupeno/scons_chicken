@@ -1,4 +1,6 @@
-- Finish the examples.
+- Document:
+	- Everything.
+- Finish the examples:
 	- Take a look at sc-mfl.
 	- Make sc-mfp depending on sc-mfl.
 	- Change the source code of sc-ofp to identify itself.

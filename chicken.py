@@ -12,10 +12,13 @@ import os
 from string import strip
 
 def generate(env):
+    # Get the builders for c and c++
     c_file, cxx_file = SCons.Tool.createCFileBuilders(env)
 
+    # and add .scm extensions to the c builder with our own action.
     c_file.add_action('.scm', SCons.Action.Action("$CHICKENCOM"))
 
+    # Chicken variable/constans.
     env['CHICKEN'] = env.Detect('chicken') or 'chicken'
     env['CHICKENFLAGS'] = SCons.Util.CLVar('')
     env['CHICKENCOM'] = '$CHICKEN $CHICKENFLAGS $SOURCE -output-file $TARGET'
@@ -23,15 +26,35 @@ def generate(env):
     env['CHICKENREPOSITORY'] = strip(os.popen('chicken-setup -repository').read()) + '/'
     
     def CheckChicken(context):
+        """ This procedure should be running on a Configure context.
+            It will return True if there's a working Chicken installation,
+            false otherwise."""
+        
         context.Message("Checking for Chicken... ")
+
+        # Try to compile and run a simple Scheme program.
         result = context.TryRun("(display (+ 1 2))", ".scm")
         context.Result(result[0])
         return result[0]
 
-    env.CheckChicken = CheckChicken
-
     def ChickenSetup(env, target, source, *args, **kw):
+        """ This procedure works like a builder and it builds the .setup files.
+            Parameters:
+            1. env (any way to fix this ?)
+            2. Name of the .setup file to generate.
+            3. Name or list of names of the .so files that will be linked from the setup file.
+            Optional parameters:
+            documentation = Where is the HTML documentation.
+            syntax = Whether (true or false) this contain syntax extensions.
+            requires = other or list of other required extensions."""
+        
         def makeLispList(head, items, prefix = ""):
+            """ This procedure builds a string that resembles a Lisp list of strings.
+                The first parameter is the header of the Lisp-like list.
+                The second parameter is either a string or a list of strings that
+                will form the Lisp-like list.
+                Prefix is an optional parameter that will be prepended to each item
+                on the list."""
             l = "(" + head
             if isinstance(items, list):
                 for i in items:
@@ -40,34 +63,44 @@ def generate(env):
                 l += "\"" + prefix + items + "\""
             l += ")" 
             return l
-            
+
+        # Open the list (a .setup is a list).
         setup = "("
-        
+
+        # Make a list of the sources, the .so files. All located on CHICKENREPOSITOR.
         setup += makeLispList("files", source, env['CHICKENREPOSITORY'])
 
+        # Add the documentation.
         if kw.has_key('documentation'):
             setup += "\n(documentation \"" + kw['documentation'] + "\")"
 
+        # Is this a syntax extension ?
         if kw.has_key('syntax') and kw('syntax') == True:
             setup += "\n(syntax)"
 
+        # What other extensions are necesary by this one ?
         if kw.has_key('requires'):
+            # Make a list of extensions.
             setup += "\n" + makeLispList("requires", kw['requires'])
 
+        # Close the list.
         setup += ")\n"
 
+        # The target should be one and only one file, if it is a list, we take the first one.
         if(isinstance(target, list)):
             target = target[0]
 
+        # Write the list (being hold as a string on setup) to the file.
         setupFile = open(target, 'w')
         setupFile.write(setup)
         setupFile.close()
 
+        # Return an object representing the file for further handling.
         return env.File(target)
 
-    env.ChickenSetup = ChickenSetup
-
-        
+    # Put the procedures on env, so the SConstruct file can find them.
+    env.CheckChicken = CheckChicken
+    env.ChickenSetup = ChickenSetup        
 
 def exists(env):
     return env.Detect(['chicken'])
