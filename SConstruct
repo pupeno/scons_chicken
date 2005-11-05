@@ -9,14 +9,16 @@
 
 env = Environment()
 
+# Configuration.
 opts = Options(".scons-chicken.conf")
 opts.Add(PathOption("PREFIX", "Directory to install under", "/usr/local"))
 opts.Update(env)
 opts.Save(".scons-chicken.conf", env)
 
+# Help.
 Help(opts.GenerateHelpText(env))
 
+# Install chicken.py.
 installDir = "$PREFIX/lib/scons/SCons/Tool/"
-
 env.Install(installDir, 'chicken.py')
 env.Alias('install', installDir)

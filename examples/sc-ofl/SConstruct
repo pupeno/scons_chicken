@@ -7,26 +7,49 @@
 # scons-chicken is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License for more details.
 # You should have received a copy of the GNU General Public License along with scons-chicken; if not, write to the Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA
 
+# Create an environment including the scons-chicken tool.
 env = Environment(tools = ["default", "chicken"], toolpath=["../../"])
+# The previous line is to use the non-installed scons-chicken. In your project use:
+# env = Environment(tools = ["default", "chicken"])
 
+# Parse the parameters that Chicken tell us we'll need to pass to the C compiler.
 env.ParseConfig('chicken-config -libs -cflags -shared')
 
+# Start some checks.
 conf = env.Configure(custom_tests = {'CheckChicken' : env.CheckChicken})
 
+# Check if Chicken is present and it can create binaries.
 if not conf.CheckChicken():
     print "It seems you don't have Chicken installed or it is not"
     print "installed correctly. For more information:"
     print "http://www.call-with-current-continuation.org/"
     exit(1)
 
+
+# Add your specific checks here!
+
+# Finished checking.
 env = conf.Finish()
 
+# sc-ofl.so made of sc-ofl.scm.
+# SHLIBPREFIX = "" is needed so we generate sc-mfl1.so instead of libsc-mfl1.so.
 scofl = env.SharedLibrary("sc-ofl.scm", SHLIBPREFIX = "")
 
+# Generate a .setup file.
+# Parameters:
+# 1. env (any way to fix this ?)
+# 2. Name of the .setup file to generate.
+# 3. Name or list of names of the .so files that will be linked from the setup file.
+# Optional parameters:
+# documentation = Where is the HTML documentation.
+# syntax = Whether (true or false) this contain syntax extensions.
+# requires = other or list of other required extensions. 
 setup = env.ChickenSetup(env, "sc-ofl.setup", "sc-ofl.so")
 
+# Delete the .setup when deleting scofl.
 env.Clean(scofl, setup)
 
+# Instal the lib and the .setup file.
 env.Install(env['CHICKENREPOSITORY'], scofl)
 env.Install(env['CHICKENREPOSITORY'], setup)
 env.Alias('install', env['CHICKENREPOSITORY'])

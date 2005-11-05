@@ -31,7 +31,7 @@ if not conf.CheckChicken():
 env = conf.Finish()
 
 # sc-mfl1.so composed of sc-mfl1.scm y sc-mfl3.scm.
-# SHLIBPREFIX is needed so we generate sc-mfl1.so instead of libsc-mfl1.so.
+# SHLIBPREFIX = "" is needed so we generate sc-mfl1.so instead of libsc-mfl1.so.
 scmfl1 = env.SharedLibrary("sc-mfl1",
                           ["sc-mfl1.scm", "sc-mfl3.scm"],
                           SHLIBPREFIX = "")
@@ -42,6 +42,14 @@ scmfl2 = env.SharedLibrary("sc-mfl2",
                           SHLIBPREFIX = "")
 
 # Generate a .setup file.
+# Parameters:
+# 1. env (any way to fix this ?)
+# 2. Name of the .setup file to generate.
+# 3. Name or list of names of the .so files that will be linked from the setup file.
+# Optional parameters:
+# documentation = Where is the HTML documentation.
+# syntax = Whether (true or false) this contain syntax extensions.
+# requires = other or list of other required extensions. 
 setup = env.ChickenSetup(env, 
                          "sc-mfl.setup",
                          ["sc-mfl1.so", "sc-mfl2.so"],
