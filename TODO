@@ -5,7 +5,6 @@
 	- Make sc-ofp depending on sc-ofl.
 	- Make sc-mfp depending on sc-mfl.
 	- Change the source code of sc-ofp to identify itself.
-- Check if we can call chicken-cofig on CheckChicken to have thi right flags even if the programer is not setting the right flags for his/her program.
 - Make the library example be a full extension that can be installed and all. ALMOST DONE.
 - Not have to pass env to env.ChickenSetup as first parameter.
 - Make a scanner to look for (include blah) http://www.scons.org/doc/HTML/scons-user/c2244.html
