@@ -9,4 +9,8 @@
 - Make the library example be a full extension that can be installed and all. ALMOST DONE.
 - Not have to pass env to env.ChickenSetup as first parameter.
 - Make a scanner to look for (include blah) http://www.scons.org/doc/HTML/scons-user/c2244.html
-- Release scons-chicken 0.1.0 when there's nothing else to do above this line.
+- Release scons-chicken 0.1.0 when there's nothing else above this line.
+
+- Check if we can call chicken-cofig on CheckChicken to have thi right flags even if the programer is not setting the right flags for his/her program.
+- Can the .setup file be created outomaticall from the .so file handlers ?
+- Release scons-chicken 0.2.0 when there's nothing else above this line.
