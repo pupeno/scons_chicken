@@ -7,6 +7,10 @@
 ;;;; You should have received a copy of the GNU General Public License along with scons-chicken; if not, write to the Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA
 
 (declare (unit sc-mfl2))
+(declare (uses sc-ofl))
 
-(define (sc-mfl2)
-  (display "Hello from sc-mfl2, the scons-chicken multiple-file-library 2."))
+(define (sc-mfl2-proc)
+  (display "Hello from sc-mfl2, the scons-chicken multiple-file-library 2.")
+  (newline)
+  (display " ")
+  (sc-ofl-proc))
