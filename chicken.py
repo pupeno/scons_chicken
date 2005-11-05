@@ -60,7 +60,7 @@ def generate(env):
                 for i in items:
                     l += " \"" + prefix + i + "\" "
             else:
-                l += "\"" + prefix + items + "\""
+                l += " \"" + prefix + items + "\""
             l += ")" 
             return l
 
