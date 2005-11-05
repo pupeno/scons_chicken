@@ -13,7 +13,7 @@ env = Environment(tools = ["default", "chicken"], toolpath=["../../"])
 # env = Environment(tools = ["default", "chicken"])
 
 # Parse the parameters that Chicken tell us we'll need to pass to the C compiler.
-env.ParseConfig('chicken-config -cflags -libs -static')
+env.ParseConfig('chicken-config -cflags -libs -shared')
 
 # Start some checks.
 conf = env.Configure(custom_tests = {'CheckChicken' : env.CheckChicken})
