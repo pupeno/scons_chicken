@@ -12,4 +12,4 @@
   (display "Hello from sc-sap, the scons-chicken stand-alone-program.")
   (newline))
 
-(sc-ofp-proc)
+(sc-sap-proc)
