@@ -5,7 +5,6 @@ scons-chicken is an add-on for SCons (http://www.scons.org), a building system (
 
 Installation
 ------------
-
 To install it you'll need SCons (http://www.scons.org) and all you need is to run:
  scons install
 and it will install chicken.py on /usr/lib/scons/Scons/Tool/. If you installed SCons somewhere else, edit SConstruct and fix.
@@ -13,9 +12,12 @@ If you know of a better fix that will work no matter where you installed SCons (
 
 Usage
 -----
-
 To learn how to use scons-chicken, check out the examples directories.
 sc-ofl: scons-chicken one-file-library
 sc-mfl: scons-chicken multiple-file-library (depends on sc-ofl)
 sc-ofp: scons-chicken one-file-program
 sc-mfp: scons-chicken multiple-file-program (depends on sc-tfl)
+
+Limitations
+-----------
+It can't create extensions of multiple libraries (but it can create libraries of multiple files).

@@ -6,8 +6,8 @@
 ;;;; scons-chicken is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License for more details.
 ;;;; You should have received a copy of the GNU General Public License along with scons-chicken; if not, write to the Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA
 
-(define-extension sc-mfl4)
-(export sc-mfl4-proc)
+(declare (unit sc-mfl4))
+(declare (export sc-mfl4-proc))
 (use sc-ofl)
 
 (define (sc-mfl4-proc)

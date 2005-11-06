@@ -9,36 +9,128 @@
 
 import SCons.Tool
 import os
+import os.path
+from SCons.Builder import Builder
 from SCons.Node.FS import File
-from string import strip
+from string import strip, split
 
 def generate(env):
-    # Get the builders for c and c++
-    c_file, cxx_file = SCons.Tool.createCFileBuilders(env)
-
-    # and add .scm extensions to the c builder with our own action.
-    c_file.add_action('.scm', SCons.Action.Action("$CHICKENCOM"))
-
-    # Chicken variable/constans.
-    env['CHICKEN'] = env.Detect('chicken') or 'chicken'
-    env['CHICKENFLAGS'] = SCons.Util.CLVar('')
-    env['CHICKENCOM'] = '$CHICKEN $SOURCE -output-file $TARGET $CHICKENFLAGS'
-
+    env["CHICKEN"] = env.Detect("chicken") or "chicken"
+    env["CHICKENPROFLAGS"] = ""
+    env["CHICKENLIBFLAGS"] = "-dynamic -feature chicken-compile-shared -feature compiling-extension"
+    #"-dynamic -feature chicken-compile-shared -feature compiling-extension"
     env['CHICKENREPOSITORY'] = strip(os.popen('chicken-setup -repository').read()) + '/'
     
-    def CheckChicken(context):
-        """ This procedure should be running on a Configure context.
-            It will return True if there's a working Chicken installation,
-            false otherwise."""
+    env.ChickenPro = Builder(action = "$CHICKEN $SOURCE -output-file $TARGET $CHICKENPROFLAGS")
+    def chickenLibGenerator(source, target, env, for_signature):
+        actions = []
+        for s, t in zip(source, target):
+            actions.append("%s %s -output-file %s %s" % (env["CHICKEN"], s, t, env["CHICKENLIBFLAGS"]))
+        return actions
+    
+    env.ChickenLib = Builder(#action = "$CHICKEN $SOURCE -output-file $TARGET $CHICKENLIBFLAGS",
+                             generator = chickenLibGenerator,
+                             sufix = '.c',
+                             src_sufix = '.scm')
+
+    # Get the builders for c and c++
+    #c_file, cxx_file = SCons.Tool.createCFileBuilders(env)
+
+    # and add .scm extensions to the c builder with our own action.
+    #c_file.add_action('.scm', SCons.Action.Action("$CHICKENCOM"))
+
+    def ChickenProgram(env, target, source = None, *args, **kw):
+        """Pseudo builder to make a Chicken program."""
         
-        context.Message("Checking for Chicken... ")
+        # Check if we have Chiken instaled.
+        conf = env.Configure()
+        if not conf.CheckLibWithHeader("chicken",
+                                       "chicken.h",
+                                       "c",
+                                       "C_alloc(C_SIZEOF_LIST(3));"):
+            print "It seems you don't have Chicken installed or it is not"
+            print "installed correctly. For more information:"
+            print "http://www.call-with-current-continuation.org/"
+            exit(1)
+        env = conf.Finish()
 
-        # Try to compile and run a simple Scheme program.
-        result = context.TryRun("(display (+ 1 2))", ".scm")
-        context.Result(result[0])
-        return result[0]
+        # If no source provided, source is what is on target and target should be generated.
+        if not source:
+            source = target
+            if isinstance(source, list):
+                target = split(source[0], ".")[0]
+            else:
+                target = split(source, ".")[0]
+                
+        # Separate Scheme sources from the rest
+        schemeSources, schemeAsCSources, otherSources = GroupSources(source)
 
-    def ChickenSetup(env, target, source, *args, **kw):
+        # Compile Scheme sources into C using Chicken (for programs).
+        env.ChickenPro(env, schemeAsCSources, schemeSources)
+
+        # Add the needed libraries.
+        env.ParseConfig('chicken-config -shared -libs -cflags')
+        
+        return apply(env.Program, (target, schemeAsCSources + otherSources) + args, kw)
+
+    def ChickenExtension(env, target, source = None, *args, **kw):
+        """Pseudo builder to make a Chicken extension."""
+        
+        # If no source provided, source is what is on target and target should be generated.
+        if not source:
+            source = target
+            if isinstance(source, list):
+                target = split(source[0], ".")[0]
+            else:
+                target = split(source, ".")[0]
+            target = [target, target + ".setup"]
+                
+        # Separate Scheme sources from the rest
+        schemeSources, schemeAsCSources, otherSources = GroupSources(source)
+
+        # Compile Scheme sources into C using Chicken (for programs).
+        env.ChickenLib(env, schemeAsCSources, schemeSources)
+
+        # Add the needed libraries.
+        env.ParseConfig('chicken-config -shared -libs -cflags')
+
+        kw["SHLIBPREFIX"] = ""
+        lib = apply(env.SharedLibrary, (target, schemeAsCSources + otherSources) + args, kw)
+
+        # Generate the .setup file.
+        setup = ChickenSetup(os.path.splitext(str(lib[0]))[0] + ".setup", lib[0])
+
+        # Clean the .setup file when cleaning the library.
+        env.Clean(lib, setup)
+
+        return lib, setup
+
+    # Attach the pseudo-Builders to the Environment so they can be called like a real Builder.
+    env.ChickenProgram = ChickenProgram
+    env.ChickenExtension = ChickenExtension
+    
+    def GroupSources(sources):
+        """Perform the set of common operations for any Chicken project."""
+     
+        if not isinstance(sources, list):
+            sources = [sources]
+        
+        # Lists for the names of the scheme sources and others respectively.
+        schemeSources = []
+        schemeAsCSources = []
+        otherSources = []
+
+        # Separate sources into scheme, generated and other sources
+        for s in sources:
+            if os.path.splitext(s)[1] == '.scm':
+                schemeSources.append(s)
+                schemeAsCSources.append(os.path.splitext(s)[0]+'.c')
+            else:
+                otherSources.append(s)
+
+        return schemeSources, schemeAsCSources, otherSources
+    
+    def ChickenSetup(setup, files, documentation = None, syntax = False, requires = None):
         """ This procedure works like a builder and it builds the .setup files.
             Parameters:
             1. env (any way to fix this ?)
@@ -83,42 +175,34 @@ def generate(env):
             return l
 
         # Open the list (a .setup is a list).
-        setup = "("
+        content = "("
 
         # Make a list of the sources, the .so files. All located on CHICKENREPOSITOR.
-        setup += makeLispList("files", source, env['CHICKENREPOSITORY'])
+        content += makeLispList("files", files, env['CHICKENREPOSITORY'])
 
         # Add the documentation.
-        if kw.has_key('documentation'):
-            setup += "\n(documentation \"" + kw['documentation'] + "\")"
+        if documentation:
+            content += "\n(documentation \"" + documentation + "\")"
 
         # Is this a syntax extension ?
-        if kw.has_key('syntax') and kw('syntax') == True:
-            setup += "\n(syntax)"
+        if syntax == True:
+            content += "\n(syntax)"
 
         # What other extensions are necesary by this one ?
-        if kw.has_key('requires'):
+        if requires:
             # Make a list of extensions.
-            setup += "\n" + makeLispList("requires", kw['requires'])
+            coetent += "\n" + makeLispList("requires", requires)
 
         # Close the list.
-        setup += ")\n"
-
-        # The target should be one and only one file, if it is a list, we take the first one.
-        if(isinstance(target, list)):
-            target = target[0]
+        content += ")\n"
 
         # Write the list (being hold as a string on setup) to the file.
-        setupFile = open(target, 'w')
-        setupFile.write(setup)
+        setupFile = open(setup, 'w')
+        setupFile.write(content)
         setupFile.close()
 
         # Return an object representing the file for further handling.
-        return env.File(target)
-
-    # Put the procedures on env, so the SConstruct file can find them.
-    env.CheckChicken = CheckChicken
-    env.ChickenSetup = ChickenSetup        
+        return env.File(setup)
 
 def exists(env):
     return env.Detect(['chicken'])

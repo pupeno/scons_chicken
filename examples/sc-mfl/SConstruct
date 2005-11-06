@@ -12,54 +12,19 @@ env = Environment(tools = ["default", "chicken"], toolpath=["../../"])
 # The previous line is to use the non-installed scons-chicken. In your project use:
 # env = Environment(tools = ["default", "chicken"])
 
-# Parse the parameters that Chicken tell us we'll need to pass to the C compiler.
-env.ParseConfig('chicken-config -libs -cflags -shared')
+# sc-mfl1.so composed of sc-mfl1.scm y sc-mfl2.scm.
+sc_mfl1, sc_mfl1_setup = env.ChickenExtension(env,
+                                              "sc-mfl1",
+                                              ["sc-mfl1.scm", "sc-mfl2.scm"])
 
-# Start some checks.
-conf = env.Configure(custom_tests = {'CheckChicken' : env.CheckChicken})
-
-# Check if Chicken is present and it can create binaries.
-if not conf.CheckChicken():
-    print "It seems you don't have Chicken installed or it is not"
-    print "installed correctly. For more information:"
-    print "http://www.call-with-current-continuation.org/"
-    exit(1)
-
-# Add your specific checks here!
-
-# Finished checking.
-env = conf.Finish()
-
-# sc-mfl1.so composed of sc-mfl1.scm y sc-mfl3.scm.
-# SHLIBPREFIX = "" is needed so we generate sc-mfl1.so instead of libsc-mfl1.so.
-scmfl1 = env.SharedLibrary("sc-mfl1",
-                          ["sc-mfl1.scm", "sc-mfl3.scm"],
-                          SHLIBPREFIX = "")
-
-# sc-mfl2.so composed of sc-mfl2.scm y sc-mfl4.scm.
-scmfl2 = env.SharedLibrary("sc-mfl2",
-                          ["sc-mfl2.scm", "sc-mfl4.scm"],
-                          SHLIBPREFIX = "")
-
-# Generate a .setup file.
-# Parameters:
-# 1. env (any way to fix this ?)
-# 2. Name of the .setup file to generate.
-# 3. Name or list of names of the .so files that will be linked from the setup file.
-# Optional parameters:
-# documentation = Where is the HTML documentation.
-# syntax = Whether (true or false) this contain syntax extensions.
-# requires = other or list of other required extensions. 
-setup = env.ChickenSetup(env, 
-                         "sc-mfl.setup",
-                         [scmfl1, scmfl2],
-                         requires="sc-ofl")
-
-# Delete the setup file when cleaning (scmfl1).
-env.Clean(scmfl1, setup)
+# sc-mfl3.so composed of sc-mfl3.scm y sc-mfl4.scm.
+#sc_mfl3, sc_mfl3_setup = env.ChickenExtension(env,
+#                                              "sc-mfl3", 
+#                                              ["sc-mfl3.scm", "sc-mfl4.scm"])
 
 # Install the .so files and the .setup file on the extension directory.
-env.Install(env['CHICKENREPOSITORY'], scmfl1)
-env.Install(env['CHICKENREPOSITORY'], scmfl2)
-env.Install(env['CHICKENREPOSITORY'], setup)
+env.Install(env['CHICKENREPOSITORY'], sc_mfl1)
+env.Install(env['CHICKENREPOSITORY'], sc_mfl1_setup)
+#env.Install(env['CHICKENREPOSITORY'], sc_mfl3)
+#env.Install(env['CHICKENREPOSITORY'], sc_mfl3_setup)
 env.Alias('install', env['CHICKENREPOSITORY'])

@@ -12,30 +12,9 @@ env = Environment(tools = ["default", "chicken"], toolpath=["../../"])
 # The previous line is to use the non-installed scons-chicken. In your project use:
 # env = Environment(tools = ["default", "chicken"])
 
-# Parse the parameters that Chicken tell us we'll need to pass to the C compiler.
-env.ParseConfig('chicken-config -cflags -libs -shared')
-
-# Start some checks.
-conf = env.Configure(custom_tests = {'CheckChicken' : env.CheckChicken})
-
-# Check if Chicken is present and it can create binaries.
-if not conf.CheckChicken():
-    print "It seems you don't have Chicken installed or it is not"
-    print "installed correctly. For more information:"
-    print "http://www.call-with-current-continuation.org/"
-    exit(1)
-
-# Add your specific checks here!
-
-# Finished checking.
-env = conf.Finish()
-
-# Flags to make Chicken build an program.
-env['CHICKENFLAGS'] = "-quiet"
-
 # sc-ofp (executable binary) made of sc-ofp.scm.
-scofp = env.Program('sc-ofp.scm')
+sc_ofp = env.ChickenProgram(env, "sc-ofp.scm")
 
 # Install sc-ofp.
-env.Install('/usr/bin/', scofp)
+env.Install('/usr/bin/', sc_ofp)
 env.Alias('install', '/usr/bin/')
