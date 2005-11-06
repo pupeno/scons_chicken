@@ -11,8 +11,7 @@ env = Environment(tools = ["default", "chicken"], toolpath=["../../"])
 
 # Configuration.
 opts = Options(".scons-chicken.conf")
-opts.Add(PathOption("BINPREFIX", "Prefix directory for binaries", "/usr/local"))
-opts.Add(PathOption("SCONSPREFIX", "Prefix directory for scons", "/usr/local"))
+opts.Add(PathOption("PREFIX", "Prefix directory for SCons", "/usr/local"))
 opts.Update(env)
 opts.Save(".scons-chicken.conf", env)
 
@@ -22,25 +21,7 @@ Help(opts.GenerateHelpText(env))
 # Parse the parameters that Chicken tell us we'll need to pass to the C compiler.
 env.ParseConfig('chicken-config -libs -cflags -shared')
 
-# Start some checks.
-conf = env.Configure(custom_tests = {'CheckChicken' : env.CheckChicken})
-
-# Check if Chicken is present and it can create binaries.
-if not conf.CheckChicken():
-    print "It seems you don't have Chicken installed or it is not"
-    print "installed correctly. For more information:"
-    print "http://www.call-with-current-continuation.org/"
-    exit(1)
-
-# Finished checking.
-env = conf.Finish()
-
-chickenll = env.Program("chicken-ll.scm")
-
 # Install.
-sconsInstallDir = "$SCONSPREFIX/lib/scons/SCons/Tool/"
-binInstallDir = "$BINPREFIX/bin"
-env.Install(sconsInstallDir, 'chicken.py')
-env.Install(binInstallDir, chickenll)
-env.Alias('install', sconsInstallDir)
-env.Alias('install', binInstallDir)
+installDir = "$PREFIX/lib/scons/SCons/Tool/"
+env.Install(installDir, 'chicken.py')
+env.Alias('install', installDir)

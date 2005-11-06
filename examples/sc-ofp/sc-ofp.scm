@@ -13,7 +13,6 @@
 (define (sc-ofp-proc)
   (display "Hello from sc-ofp, the scons-chicken one-file-program.")
   (newline)
-  (display " ")
   (sc-ofl-proc))
 
 (sc-ofp-proc)
