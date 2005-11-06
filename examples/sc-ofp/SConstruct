@@ -30,6 +30,9 @@ if not conf.CheckChicken():
 # Finished checking.
 env = conf.Finish()
 
+# Flags to make Chicken build an program.
+env['CHICKENFLAGS'] = "-quiet"
+
 # sc-ofp (executable binary) made of sc-ofp.scm.
 scofp = env.Program('sc-ofp.scm')
 

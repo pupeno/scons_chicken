@@ -30,6 +30,9 @@ if not conf.CheckChicken():
 # Finished checking.
 env = conf.Finish()
 
+# Flags to make Chicken build an extension.
+env['CHICKENFLAGS'] = "-dynamic -feature chicken-compile-shared -quiet -feature compiling-extension -optimize-level 2 -no-trace"
+
 # sc-ofl.so made of sc-ofl.scm.
 # SHLIBPREFIX = "" is needed so we generate sc-mfl1.so instead of libsc-mfl1.so.
 scofl = env.SharedLibrary("sc-ofl.scm", SHLIBPREFIX = "")
