@@ -9,6 +9,7 @@
 
 import SCons.Tool
 import os
+from SCons.Node.FS import File
 from string import strip
 
 def generate(env):
@@ -63,8 +64,10 @@ def generate(env):
                     return prefix + item
                 elif isinstance(item, list):
                     return prefix + str(item[0])
+                elif isinstance(item, File):
+                    return prefix + item.name
                 else:
-                    print "Type not recognized to build .setup file"
+                    print "Type not recognized to build .setup file."
                     return ""
                 
                 
