@@ -11,7 +11,8 @@ env = Environment(tools = ["default", "chicken"], toolpath=["../../"])
 
 # Configuration.
 opts = Options(".scons-chicken.conf")
-opts.Add(PathOption("PREFIX", "Directory to install under", "/usr/local"))
+opts.Add(PathOption("BINPREFIX", "Prefix directory for binaries", "/usr/local"))
+opts.Add(PathOption("SCONSPREFIX", "Prefix directory for scons", "/usr/local"))
 opts.Update(env)
 opts.Save(".scons-chicken.conf", env)
 
@@ -34,9 +35,12 @@ if not conf.CheckChicken():
 # Finished checking.
 env = conf.Finish()
 
-env.Program("chicken-ll.scm")
+chickenll = env.Program("chicken-ll.scm")
 
-# Install chicken.py.
-installDir = "$PREFIX/lib/scons/SCons/Tool/"
-env.Install(installDir, 'chicken.py')
-env.Alias('install', installDir)
+# Install.
+sconsInstallDir = "$SCONSPREFIX/lib/scons/SCons/Tool/"
+binInstallDir = "$BINPREFIX/bin"
+env.Install(sconsInstallDir, 'chicken.py')
+env.Install(binInstallDir, chickenll)
+env.Alias('install', sconsInstallDir)
+env.Alias('install', binInstallDir)
