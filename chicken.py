@@ -22,7 +22,7 @@ def generate(env):
     # Chicken variable/constans.
     env['CHICKEN'] = env.Detect('chicken') or 'chicken'
     env['CHICKENFLAGS'] = SCons.Util.CLVar('')
-    env['CHICKENCOM'] = '$CHICKEN $CHICKENFLAGS $SOURCE -output-file $TARGET'
+    env['CHICKENCOM'] = '$CHICKEN $SOURCE -output-file $TARGET $CHICKENFLAGS'
 
     env['CHICKENREPOSITORY'] = strip(os.popen('chicken-setup -repository').read()) + '/'
     
