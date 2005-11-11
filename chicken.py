@@ -17,27 +17,30 @@ from string import strip, split
 def generate(env):
     env["CHICKEN"] = env.Detect("chicken") or "chicken"
     env["CHICKENPROFLAGS"] = ""
-    env["CHICKENLIBFLAGS"] = "-dynamic -feature chicken-compile-shared -feature compiling-extension"
-    #"-dynamic -feature chicken-compile-shared -feature compiling-extension"
+    env["CHICKENEXTFLAGS"] = "-dynamic -feature chicken-compile-shared -feature compiling-extension"
     env['CHICKENREPOSITORY'] = strip(os.popen('chicken-setup -repository').read()) + '/'
-    
-    env.ChickenPro = Builder(action = "$CHICKEN $SOURCE -output-file $TARGET $CHICKENPROFLAGS")
-    def chickenLibGenerator(source, target, env, for_signature):
+
+    def chickenProGenerator(source, target, env, for_signature):
+        """ Generate the actions to compile a Chicken program. """
         actions = []
         for s, t in zip(source, target):
-            actions.append("%s %s -output-file %s %s" % (env["CHICKEN"], s, t, env["CHICKENLIBFLAGS"]))
+            actions.append("$CHICKEN %s -output-file %s $CHICKENPROFLAGS" % (s, t))
         return actions
-    
-    env.ChickenLib = Builder(#action = "$CHICKEN $SOURCE -output-file $TARGET $CHICKENLIBFLAGS",
-                             generator = chickenLibGenerator,
+
+    env.ChickenPro = Builder(generator = chickenProGenerator,
                              sufix = '.c',
                              src_sufix = '.scm')
-
-    # Get the builders for c and c++
-    #c_file, cxx_file = SCons.Tool.createCFileBuilders(env)
-
-    # and add .scm extensions to the c builder with our own action.
-    #c_file.add_action('.scm', SCons.Action.Action("$CHICKENCOM"))
+    
+    def chickenExtGenerator(source, target, env, for_signature):
+        """ Generate the actions to compile a Chicken extension. """
+        actions = []
+        for s, t in zip(source, target):
+            actions.append("$CHICKEN %s -output-file %s $CHICKENEXTFLAGS" % (s, t))
+        return actions
+    
+    env.ChickenExt = Builder(generator = chickenExtGenerator,
+                             sufix = '.c',
+                             src_sufix = '.scm')
 
     def ChickenProgram(env, target, source = None, *args, **kw):
         """Pseudo builder to make a Chicken program."""
@@ -89,7 +92,7 @@ def generate(env):
         schemeSources, schemeAsCSources, otherSources = GroupSources(source)
 
         # Compile Scheme sources into C using Chicken (for programs).
-        env.ChickenLib(env, schemeAsCSources, schemeSources)
+        env.ChickenExt(env, schemeAsCSources, schemeSources)
 
         # Add the needed libraries.
         env.ParseConfig('chicken-config -shared -libs -cflags')
