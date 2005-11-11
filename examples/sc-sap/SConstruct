@@ -14,7 +14,7 @@ env = Environment(tools = ["default", "chicken"], toolpath=["../../"])
 
 # sc-sap (executable binary) made of sc-sap.scm.
 sc_sap = env.ChickenProgram(env, "sc-sap.scm")
-
-# Install sc-sap.
 env.Install('/usr/bin/', sc_sap)
+
+# Install alias.
 env.Alias('install', '/usr/bin/')

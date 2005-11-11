@@ -14,7 +14,7 @@ env = Environment(tools = ["default", "chicken"], toolpath=["../../"])
 
 # sc-ofp (executable binary) made of sc-ofp.scm.
 sc_ofp = env.ChickenProgram(env, "sc-ofp.scm")
-
-# Install sc-ofp.
 env.Install('/usr/bin/', sc_ofp)
+
+# Install alias.
 env.Alias('install', '/usr/bin/')

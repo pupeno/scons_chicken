@@ -13,10 +13,9 @@ env = Environment(tools = ["default", "chicken"], toolpath=["../../"])
 # env = Environment(tools = ["default", "chicken"])
 
 # sc-ofl.so made of sc-ofl.scm.
-# SHLIBPREFIX = "" is needed so we generate sc-mfl1.so instead of libsc-mfl1.so.
-sc_ofl, sc_ofl_setup = env.ChickenExtension(env, "sc-ofl.scm", SHLIBPREFIX = "")
-
-# Instal the lib and the .setup file.
+sc_ofl, sc_ofl_setup = env.ChickenExtension(env, "sc-ofl.scm")
 env.Install(env['CHICKENREPOSITORY'], sc_ofl)
 env.Install(env['CHICKENREPOSITORY'], sc_ofl_setup)
+
+# Install alias
 env.Alias('install', env['CHICKENREPOSITORY'])
