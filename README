@@ -13,6 +13,7 @@ If you know of a better fix that will work no matter where you installed SCons (
 Usage
 -----
 To learn how to use scons-chicken, check out the examples directories.
+sc-sap: scons-chicken stand-alone-program (doesn't depend on any library).
 sc-ofl: scons-chicken one-file-library
 sc-mfl: scons-chicken multiple-file-library (depends on sc-ofl)
 sc-ofp: scons-chicken one-file-program
