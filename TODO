@@ -1,5 +1,3 @@
-- Finish the examples:
-	- Make sc-mfp depending on sc-mfl.
 - Not have to pass env to env.ChickenSetup as first parameter.
 - Make a scanner to look for (include blah) http://www.scons.org/doc/HTML/scons-user/c2244.html
-- Release scons-chicken 0.1.0 when there's nothing else above this line.
+- Release scons-chicken 0.2.0 when there's nothing else above this line.

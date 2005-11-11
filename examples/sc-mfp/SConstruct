@@ -7,8 +7,16 @@
 # scons-chicken is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License for more details.
 # You should have received a copy of the GNU General Public License along with scons-chicken; if not, write to the Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA
 
-SConscript(["sc-sap/SConstruct",
-            "sc-ofl/SConstruct",
-            "sc-ofp/SConstruct",
-            "sc-mfl/SConstruct",
-            "sc-mfp/SConstruct"])
+# Create an environment including the scons-chicken tool.
+env = Environment(tools = ["default", "chicken"], toolpath=["../../"])
+# The previous line is to use the non-installed scons-chicken. In your project use:
+# env = Environment(tools = ["default", "chicken"])
+
+# sc-mfp composed of sc-mfp1.scm y sc-mfp2.scm.
+sc_mfp = env.ChickenProgram(env,
+                            "sc-mfp",
+                            ["sc-mfp1.scm", "sc-mfp2.scm"])
+env.Install("/usr/bin", sc_mfp)
+
+# Install alias.
+env.Alias("install", "/usr/bin")
