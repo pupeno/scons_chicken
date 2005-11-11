@@ -97,8 +97,23 @@ def generate(env):
         kw["SHLIBPREFIX"] = ""
         lib = apply(env.SharedLibrary, (target, schemeAsCSources + otherSources) + args, kw)
 
+        if kw.has_key("DOCUMENTATION"):
+            documentation = kw["DOCUMENTATION"]
+        else:
+            documentation = ""
+
+        if kw.has_key("SYNTAX"):
+            syntax = kw["SYNTAX"]
+        else:
+            syntax = False
+
+        if kw.has_key("REQUIRES"):
+            requires = kw["REQUIRES"]
+        else:
+            requires = []
+            
         # Generate the .setup file.
-        setup = ChickenSetup(os.path.splitext(str(lib[0]))[0] + ".setup", lib[0])
+        setup = ChickenSetup(os.path.splitext(str(lib[0]))[0] + ".setup", lib[0], documentation, syntax, requires)
 
         # Clean the .setup file when cleaning the library.
         env.Clean(lib, setup)
@@ -191,7 +206,7 @@ def generate(env):
         # What other extensions are necesary by this one ?
         if requires:
             # Make a list of extensions.
-            coetent += "\n" + makeLispList("requires", requires)
+            content += "\n" + makeLispList("requires", requires)
 
         # Close the list.
         content += ")\n"
@@ -206,5 +221,3 @@ def generate(env):
 
 def exists(env):
     return env.Detect(['chicken'])
-
-

@@ -15,7 +15,8 @@ env = Environment(tools = ["default", "chicken"], toolpath=["../../"])
 # sc-mfl.so composed of sc-mfl1.scm y sc-mfl2.scm.
 sc_mfl, sc_mfl_setup = env.ChickenExtension(env,
                                             "sc-mfl",
-                                            ["sc-mfl1.scm", "sc-mfl2.scm"])
+                                            ["sc-mfl1.scm", "sc-mfl2.scm"],
+                                            REQUIRES=["sc-ofl"])
 
 # Install the .so files and the .setup file on the extension directory.
 env.Install(env['CHICKENREPOSITORY'], sc_mfl)

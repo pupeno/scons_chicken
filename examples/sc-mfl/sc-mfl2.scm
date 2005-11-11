@@ -8,7 +8,9 @@
 
 (declare (unit sc-mfl2))
 (declare (export sc-mfl2-proc))
+(use sc-ofl)
 
 (define (sc-mfl2-proc)
   (display "Hello from sc-mfl2.scm of the scons-chicken multiple-file-library.")
-  (newline))
+  (newline)
+  (sc-ofl-proc))
