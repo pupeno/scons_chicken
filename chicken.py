@@ -69,7 +69,7 @@ def generate(env):
         env.ChickenPro(env, schemeAsCSources, schemeSources)
 
         # Add the needed libraries.
-        env.ParseConfig('chicken-config -shared -libs -cflags')
+        env.ParseConfig('chicken-config -libs -cflags')
         
         return apply(env.Program, (target, schemeAsCSources + otherSources) + args, kw)
 
