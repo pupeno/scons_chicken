@@ -1,3 +1,4 @@
 - Not have to pass env to env.ChickenSetup as first parameter.
 - Make a scanner to look for (include blah) http://www.scons.org/doc/HTML/scons-user/c2244.html
+- Make support for automatic generation of eggs.
 - Release scons-chicken 0.2.0 when there's nothing else above this line.
