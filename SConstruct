@@ -7,7 +7,7 @@
 # scons-chicken is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License for more details.
 # You should have received a copy of the GNU General Public License along with scons-chicken; if not, write to the Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA
 
-env = Environment(tools = ["default", "chicken"], toolpath=["../../"])
+env = Environment()
 
 # Configuration.
 opts = Options(".scons-chicken.conf")
@@ -17,9 +17,6 @@ opts.Save(".scons-chicken.conf", env)
 
 # Help.
 Help(opts.GenerateHelpText(env))
-
-# Parse the parameters that Chicken tell us we'll need to pass to the C compiler.
-env.ParseConfig('chicken-config -libs -cflags -shared')
 
 # Install.
 installDir = "$PREFIX/lib/scons/SCons/Tool/"
