@@ -12,19 +12,12 @@ env = Environment(tools = ["default", "chicken"], toolpath=["../../"])
 # The previous line is to use the non-installed scons-chicken. In your project use:
 # env = Environment(tools = ["default", "chicken"])
 
-# sc-mfl1.so composed of sc-mfl1.scm y sc-mfl2.scm.
-sc_mfl1, sc_mfl1_setup = env.ChickenExtension(env,
-                                              "sc-mfl1",
-                                              ["sc-mfl1.scm", "sc-mfl2.scm"])
-
-# sc-mfl3.so composed of sc-mfl3.scm y sc-mfl4.scm.
-#sc_mfl3, sc_mfl3_setup = env.ChickenExtension(env,
-#                                              "sc-mfl3", 
-#                                              ["sc-mfl3.scm", "sc-mfl4.scm"])
+# sc-mfl.so composed of sc-mfl1.scm y sc-mfl2.scm.
+sc_mfl, sc_mfl_setup = env.ChickenExtension(env,
+                                            "sc-mfl",
+                                            ["sc-mfl1.scm", "sc-mfl2.scm"])
 
 # Install the .so files and the .setup file on the extension directory.
-env.Install(env['CHICKENREPOSITORY'], sc_mfl1)
-env.Install(env['CHICKENREPOSITORY'], sc_mfl1_setup)
-#env.Install(env['CHICKENREPOSITORY'], sc_mfl3)
-#env.Install(env['CHICKENREPOSITORY'], sc_mfl3_setup)
+env.Install(env['CHICKENREPOSITORY'], sc_mfl)
+env.Install(env['CHICKENREPOSITORY'], sc_mfl_setup)
 env.Alias('install', env['CHICKENREPOSITORY'])
