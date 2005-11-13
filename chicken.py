@@ -71,8 +71,15 @@ def generate(env):
         # Compile Scheme sources into C using Chicken (for programs).
         env.ChickenPro(env, schemeAsCSources, schemeSources)
 
-        # Add the needed flags.
-        kw = parseConfig("chicken-config -libs -cflags", kw)
+        # Add the needed compilation flags. They are added in this way because ParseConfig adds it to the environment and the same environment might be used for both, programs and extensions, and their cflags are conflicting.
+        ccflags = strip(os.popen("chicken-config -cflags").read())
+        if kw.has_key("CCFLAGS"):
+            kw["CCFLAGS"] += ccflags
+        else:
+            kw["CCFLAGS"] = ccflags
+            
+        # Add the needed libraries.
+        env.ParseConfig("chicken-config -libs")
         
         return apply(env.Program, (target, schemeAsCSources + otherSources) + args, kw)
 
@@ -94,8 +101,15 @@ def generate(env):
         # Compile Scheme sources into C using Chicken (for programs).
         env.ChickenExt(env, schemeAsCSources, schemeSources)
 
-        # Add the needed flags.
-        kw = parseConfig("chicken-config -shared -libs -cflags", kw)
+        # Add the needed compilation flags. They are added in this way because ParseConfig adds it to the environment and the same environment might be used for both, programs and extensions, and their cflags are conflicting.
+        ccflags = strip(os.popen("chicken-config -cflags").read())
+        if kw.has_key("CCFLAGS"):
+            kw["CCFLAGS"] += ccflags
+        else:
+            kw["CCFLAGS"] = ccflags
+            
+        # Add the needed libraries.
+        env.ParseConfig("chicken-config -libs")
 
         kw["SHLIBPREFIX"] = ""
         lib = apply(env.SharedLibrary, (target, schemeAsCSources + otherSources) + args, kw)
@@ -222,42 +236,22 @@ def generate(env):
         # Return an object representing the file for further handling.
         return env.File(setup)
 
-    def parseConfig(command, initialFlags = None):
-        """ Parse the output of a config command, like chicken-config, and return it as a dictionary. """
-        flags = {
-            "ASFLAGS" : [],
-            "CCFLAGS" : [],
-            "CPPFLAGS" : [],
-            "CPPPATH" : [],
-            "LIBPATH" : [],
-            "LIBS" : [],
-            "LINKFLAGS" : []
-        }
-        flags.update(initialFlags)
-        
-        staticLibs = []
+    def findLibs(output, initialFlags = None):
+        """ Parse the output of a config command, like chicken-config, and finds the libs and libpaths. """
+        flags = {"LIBPATH":[],
+                 "LIBS":[]}
 
-        params = split(os.popen(command).read())
-        for param in params:
-            if param[0] != "-":
-                staticLibs.append(param)
-            elif param[:2] == "-L":
-                flags["LIBPATH"].append(param[2:])
-            elif param[:2] == "-l":
-                flags["LIBS"].append(param[2:])
-            elif param[:2] == "-I":
-                flags["CPPPATH"].append(param[2:])
-            elif param[:4] == "-Wa,":
-                flags["ASFLAGS"].append(param)
-            elif param[:4] == "-Wl,":
-                flags["LINKFLAGS"].append(param)
-            elif param[:4] == "-Wp,":
-                flags["CPPFLAGS"].append(param)
-            elif param == "-pthread":
-                flags["CCFLAGS"].append(param)
-                flags["LINKFLAGS"].append(param)
-            else:
-                flags["CCFLAGS"].append(param)
+        print output
+        
+        if initialFlags:
+            flags.update(initialFlags)
+
+        output = split(output)
+        for item in output:
+            if item[:2] == "-L":
+                flags["LIBPATH"].append(item[2:])
+            elif item[:2] == "-l":
+                flags["LIBS"].append(item[2:])
                 
         return flags
 
