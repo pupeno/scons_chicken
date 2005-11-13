@@ -18,7 +18,7 @@ def generate(env):
     env["CHICKEN"] = env.Detect("chicken") or "chicken"
     env["CHICKENPROFLAGS"] = ""
     env["CHICKENEXTFLAGS"] = "-dynamic -feature chicken-compile-shared -feature compiling-extension"
-    env['CHICKENREPOSITORY'] = strip(os.popen('chicken-setup -repository').read()) + '/'
+    env["CHICKENREPOSITORY"] = strip(os.popen("chicken-setup -repository").read()) + "/"
 
     def chickenProGenerator(source, target, env, for_signature):
         """ Generate the actions to compile a Chicken program. """
@@ -28,8 +28,8 @@ def generate(env):
         return actions
 
     env.ChickenPro = Builder(generator = chickenProGenerator,
-                             sufix = '.c',
-                             src_sufix = '.scm')
+                             sufix = ".c",
+                             src_sufix = ".scm")
     
     def chickenExtGenerator(source, target, env, for_signature):
         """ Generate the actions to compile a Chicken extension. """
@@ -39,8 +39,8 @@ def generate(env):
         return actions
     
     env.ChickenExt = Builder(generator = chickenExtGenerator,
-                             sufix = '.c',
-                             src_sufix = '.scm')
+                             sufix = ".c",
+                             src_sufix = ".scm")
 
     def ChickenProgram(env, target, source = None, *args, **kw):
         """Pseudo builder to make a Chicken program."""
@@ -66,7 +66,7 @@ def generate(env):
                 target = split(source, ".")[0]
                 
         # Separate Scheme sources from the rest
-        schemeSources, schemeAsCSources, otherSources = GroupSources(source)
+        schemeSources, schemeAsCSources, otherSources = groupSources(source)
 
         # Compile Scheme sources into C using Chicken (for programs).
         env.ChickenPro(env, schemeAsCSources, schemeSources)
@@ -89,7 +89,7 @@ def generate(env):
             target = [target, target + ".setup"]
                 
         # Separate Scheme sources from the rest
-        schemeSources, schemeAsCSources, otherSources = GroupSources(source)
+        schemeSources, schemeAsCSources, otherSources = groupSources(source)
 
         # Compile Scheme sources into C using Chicken (for programs).
         env.ChickenExt(env, schemeAsCSources, schemeSources)
@@ -116,7 +116,7 @@ def generate(env):
             requires = []
             
         # Generate the .setup file.
-        setup = ChickenSetup(os.path.splitext(str(lib[0]))[0] + ".setup", lib[0], documentation, syntax, requires)
+        setup = chickenSetup(os.path.splitext(str(lib[0]))[0] + ".setup", lib[0], documentation, syntax, requires)
 
         # Clean the .setup file when cleaning the library.
         env.Clean(lib, setup)
@@ -127,8 +127,8 @@ def generate(env):
     env.ChickenProgram = ChickenProgram
     env.ChickenExtension = ChickenExtension
     
-    def GroupSources(sources):
-        """Perform the set of common operations for any Chicken project."""
+    def groupSources(sources):
+        """ Separate the Scheme sources from the rest and generate the file names that the compiled-to-c sources are going to have. """
      
         if not isinstance(sources, list):
             sources = [sources]
@@ -140,15 +140,15 @@ def generate(env):
 
         # Separate sources into scheme, generated and other sources
         for s in sources:
-            if os.path.splitext(s)[1] == '.scm':
+            if os.path.splitext(s)[1] == ".scm":
                 schemeSources.append(s)
-                schemeAsCSources.append(os.path.splitext(s)[0]+'.c')
+                schemeAsCSources.append(os.path.splitext(s)[0]+".c")
             else:
                 otherSources.append(s)
 
         return schemeSources, schemeAsCSources, otherSources
     
-    def ChickenSetup(setup, files, documentation = None, syntax = False, requires = None):
+    def chickenSetup(setup, files, documentation = None, syntax = False, requires = None):
         """ This procedure works like a builder and it builds the .setup files.
             Parameters:
             1. env (any way to fix this ?)
@@ -196,7 +196,7 @@ def generate(env):
         content = "("
 
         # Make a list of the sources, the .so files. All located on CHICKENREPOSITOR.
-        content += makeLispList("files", files, env['CHICKENREPOSITORY'])
+        content += makeLispList("files", files, env["CHICKENREPOSITORY"])
 
         # Add the documentation.
         if documentation:
@@ -215,7 +215,7 @@ def generate(env):
         content += ")\n"
 
         # Write the list (being hold as a string on setup) to the file.
-        setupFile = open(setup, 'w')
+        setupFile = open(setup, "w")
         setupFile.write(content)
         setupFile.close()
 
@@ -223,4 +223,4 @@ def generate(env):
         return env.File(setup)
 
 def exists(env):
-    return env.Detect(['chicken'])
+    return env.Detect(["chicken"])
