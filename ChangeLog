@@ -1,8 +1,7 @@
-Sat Nov 12 22:42:32 ART 2005  José Pablo Ezequiel Fernández <pupeno@pupeno.com>
+0.2
   * Make it possible to compile a library and a program with one SConstruct.
-
-Sat Nov 12 22:40:20 ART 2005  José Pablo Ezequiel Fernández <pupeno@pupeno.com>
   * Added example where a library and a program is built with the same SConstruct.
-
-Fri Nov 11 22:59:55 ART 2005  José Pablo Ezequiel Fernández <pupeno@pupeno.com>
   * Better path handling.
+
+0.1
+  ( No entries )
