@@ -1,7 +1,7 @@
-scons-chicken
+Scons-chicken
 =============
 
-scons-chicken is an add-on for SCons (http://www.scons.org), a building system (much like make and autotools, all in one), that adds support for Chicken (http://www.call-with-current-continuation.org/), a Scheme-to-C compiler.
+Scons-chicken is an add-on for SCons (http://www.scons.org), a building system (much like make and autotools, all in one), that adds support for Chicken (http://www.call-with-current-continuation.org/), a Scheme-to-C compiler.
 
 Installation
 ------------
@@ -12,13 +12,13 @@ If you know of a better fix that will work no matter where you installed SCons (
 
 Usage
 -----
-To learn how to use scons-chicken, check out the examples directories.
-sc-sap: scons-chicken stand-alone-program (doesn't depend on any library).
-sc-ofl: scons-chicken one-file-library.
-sc-mfl: scons-chicken multiple-file-library (depends on sc-ofl).
-sc-ofp: scons-chicken one-file-program.
-sc-mfp: scons-chicken multiple-file-program (depends on sc-tfl).
-sc-lap: scons-chicken library-and-file (it is a mix of ofl and ofp).
+To learn how to use scons-chicken, check out the examples directories:
+- sc-sap: scons-chicken stand-alone-program (doesn't depend on any library).
+- sc-ofl: scons-chicken one-file-library.
+- sc-mfl: scons-chicken multiple-file-library (depends on sc-ofl).
+- sc-ofp: scons-chicken one-file-program.
+- sc-mfp: scons-chicken multiple-file-program (depends on sc-tfl).
+- sc-lap: scons-chicken library-and-file (it is a mix of ofl and ofp).
 
 Limitations
 -----------
