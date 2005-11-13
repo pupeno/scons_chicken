@@ -1,3 +1,6 @@
+0.2
+  * Don't re-compile everything; only what had changed.
+
 0.1.1
   * Make it possible to compile a library and a program with one SConstruct.
   * Added example where a library and a program is built with the same SConstruct.
