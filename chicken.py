@@ -20,25 +20,13 @@ def generate(env):
     env["CHICKENEXTFLAGS"] = "-dynamic -feature chicken-compile-shared -feature compiling-extension"
     env["CHICKENREPOSITORY"] = strip(os.popen("chicken-setup -repository").read()) + "/"
 
-    def chickenProGenerator(source, target, env, for_signature):
-        """ Generate the actions to compile a Chicken program. """
-        actions = []
-        for s, t in zip(source, target):
-            actions.append("$CHICKEN %s -output-file %s $CHICKENPROFLAGS" % (s, t))
-        return actions
-
-    env.ChickenPro = Builder(generator = chickenProGenerator,
+    # Builder to compile a .scm to a .c for programs.
+    env.ChickenPro = Builder(action = "$CHICKEN $SOURCE -output-file $TARGET $CHICKENPROFLAGS",
                              sufix = ".c",
                              src_sufix = ".scm")
-    
-    def chickenExtGenerator(source, target, env, for_signature):
-        """ Generate the actions to compile a Chicken extension. """
-        actions = []
-        for s, t in zip(source, target):
-            actions.append("$CHICKEN %s -output-file %s $CHICKENEXTFLAGS" % (s, t))
-        return actions
-    
-    env.ChickenExt = Builder(generator = chickenExtGenerator,
+
+    # Builder to compile a .scm to a .c for extensions.
+    env.ChickenExt = Builder(action = "$CHICKEN $SOURCE -output-file $TARGET $CHICKENEXTFLAGS",
                              sufix = ".c",
                              src_sufix = ".scm")
 
@@ -69,7 +57,8 @@ def generate(env):
         schemeSources, schemeAsCSources, otherSources = groupSources(source)
 
         # Compile Scheme sources into C using Chicken (for programs).
-        env.ChickenPro(env, schemeAsCSources, schemeSources)
+        for t, s in zip(schemeAsCSources, schemeSources):
+            env.ChickenPro(env, t, s)
 
         # Add the needed compilation flags. They are added in this way because ParseConfig adds it to the environment and the same environment might be used for both, programs and extensions, and their cflags are conflicting.
         ccflags = strip(os.popen("chicken-config -cflags").read())
@@ -98,8 +87,9 @@ def generate(env):
         # Separate Scheme sources from the rest
         schemeSources, schemeAsCSources, otherSources = groupSources(source)
 
-        # Compile Scheme sources into C using Chicken (for programs).
-        env.ChickenExt(env, schemeAsCSources, schemeSources)
+        # Compile Scheme sources into C using Chicken (for extension).
+        for t, s in zip(schemeAsCSources, schemeSources):
+            env.ChickenExt(env, t, s)
 
         # Add the needed compilation flags. They are added in this way because ParseConfig adds it to the environment and the same environment might be used for both, programs and extensions, and their cflags are conflicting.
         ccflags = strip(os.popen("chicken-config -cflags").read())
