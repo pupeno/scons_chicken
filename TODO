@@ -1,3 +1,4 @@
+- Upercase scons-chicken on the begining of a sentence on all headers.
 - Not have to pass env to env.ChickenSetup as first parameter.
 - Make a scanner to look for (include blah) http://www.scons.org/doc/HTML/scons-user/c2244.html
 - Make support for automatic generation of eggs.
