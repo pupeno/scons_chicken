@@ -22,7 +22,7 @@ if not conf.CheckChickenLibrary():
 env = conf.Finish()
 
 # sc-mfl.so composed of sc-mfl1.scm y sc-mfl2.scm.
-sc_mfl = env.SharedLibrary("sc-mfl", ["sc-mfl1.scm", "sc-mfl2.scm"])
+sc_mfl = env.SharedLibrary("sc-mfl", ["sc-mfl1.scm", "sc-mfl2.scm"], SHLIBPREFIX="")
 env.Install(env['CHICKENREPOSITORY'], sc_mfl)
 
 # setup file for sc-mfl.

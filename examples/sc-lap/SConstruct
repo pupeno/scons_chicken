@@ -25,7 +25,7 @@ if not conf.CheckChickenLibrary():
 lib = conf.Finish()
 
 # sc-ofl.so made of sc-ofl.scm.
-sc_lapl = lib.SharedLibrary("sc-lapl.scm")
+sc_lapl = lib.SharedLibrary("sc-lapl.scm", SHLIBPREFIX="")
 lib.Install(lib["CHICKENREPOSITORY"], sc_lapl)
 
 # setup file for sc-lapl.
