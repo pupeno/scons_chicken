@@ -12,8 +12,17 @@ env = Environment(tools = ["default", "chicken"], toolpath=["../../"])
 # The previous line is to use the non-installed scons-chicken. In your project use:
 # env = Environment(tools = ["default", "chicken"])
 
+# Check if a Chicken program can be built (and try to alter the environment for that porpouse).
+conf = Configure(env, custom_tests = {"CheckChickenProgram" : env.CheckChickenProgram})
+if not conf.CheckChickenProgram():
+    print "It seems you don't have Chicken installed or it is not"
+    print "installed correctly. For more information:"
+    print "http://www.call-with-current-continuation.org/"
+    Exit(1)
+env = conf.Finish()
+
 # sc-ofp (executable binary) made of sc-ofp.scm.
-sc_ofp = env.ChickenProgram(env, "sc-ofp.scm")
+sc_ofp = env.Program("sc-ofp.scm")
 env.Install('/usr/bin/', sc_ofp)
 
 # Install alias.

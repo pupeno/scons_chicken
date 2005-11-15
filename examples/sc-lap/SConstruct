@@ -8,18 +8,45 @@
 # You should have received a copy of the GNU General Public License along with scons-chicken; if not, write to the Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA
 
 # Create an environment including the scons-chicken tool.
-env = Environment(tools = ["default", "chicken"], toolpath=["../../"])
+lib = Environment(tools = ["default", "chicken"], toolpath=["../../"])
 # The previous line is to use the non-installed scons-chicken. In your project use:
 # env = Environment(tools = ["default", "chicken"])
 
-# sc-ofl.so made of sc-ofl.scm.
-sc_lapl, sc_lapl_setup = env.ChickenExtension(env, "sc-lapl.scm")
-env.Install(env["CHICKENREPOSITORY"], sc_lapl)
-env.Install(env["CHICKENREPOSITORY"], sc_lapl_setup)
+# Copy the lib environment before altering it for only building libraries. This new environment, prg, will be altered for building programs.
+prg = lib.Copy()
 
-sc_lapp = env.ChickenProgram(env, "sc-lapp.scm")
-env.Install("/usr/bin/", sc_lapp)
+# Check if a Chicken library can be built (and try to alter the environment for that porpouse).
+conf = Configure(lib, custom_tests = {"CheckChickenLibrary" : lib.CheckChickenLibrary})
+if not conf.CheckChickenLibrary():
+    print "It seems you don't have Chicken installed or it is not"
+    print "installed correctly. For more information:"
+    print "http://www.call-with-current-continuation.org/"
+    Exit(1)
+lib = conf.Finish()
+
+# sc-ofl.so made of sc-ofl.scm.
+sc_lapl = lib.SharedLibrary("sc-lapl.scm")
+lib.Install(lib["CHICKENREPOSITORY"], sc_lapl)
+
+# setup file for sc-lapl.
+sc_lapl_setup = lib.ChickenSetup(sc_lapl)
+lib.Install(lib["CHICKENREPOSITORY"], sc_lapl_setup)
 
 # Install alias
-env.Alias("install", env["CHICKENREPOSITORY"])
-env.Alias("install", "/usr/bin/")
+#lib.Alias("install", env["CHICKENREPOSITORY"])
+
+
+# Check if a Chicken program can be built (and try to alter the environment for that porpouse).
+conf = Configure(prg, custom_tests = {"CheckChickenProgram" : prg.CheckChickenProgram})
+if not conf.CheckChickenProgram():
+    print "It seems you don't have Chicken installed or it is not"
+    print "installed correctly. For more information:"
+    print "http://www.call-with-current-continuation.org/"
+    Exit(1)
+prg = conf.Finish()
+
+sc_lapp = prg.Program("sc-lapp.scm")
+prg.Install("/usr/bin/", sc_lapp)
+
+# Install alias
+#prg.Alias("install", "/usr/bin/")

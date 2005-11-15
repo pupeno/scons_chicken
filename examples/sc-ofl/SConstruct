@@ -12,10 +12,22 @@ env = Environment(tools = ["default", "chicken"], toolpath=["../../"])
 # The previous line is to use the non-installed scons-chicken. In your project use:
 # env = Environment(tools = ["default", "chicken"])
 
+# Check if a Chicken library can be built (and try to alter the environment for that porpouse).
+conf = Configure(env, custom_tests = {"CheckChickenLibrary" : env.CheckChickenLibrary})
+if not conf.CheckChickenLibrary():
+    print "It seems you don't have Chicken installed or it is not"
+    print "installed correctly. For more information:"
+    print "http://www.call-with-current-continuation.org/"
+    Exit(1)
+env = conf.Finish()
+
 # sc-ofl.so made of sc-ofl.scm.
-sc_ofl, sc_ofl_setup = env.ChickenExtension(env, "sc-ofl.scm")
+sc_ofl = env.SharedLibrary("sc-ofl.scm", SHLIBPREFIX="")
 env.Install(env['CHICKENREPOSITORY'], sc_ofl)
+
+# Setup file for sc-ofl.
+sc_ofl_setup = env.ChickenSetup(sc_ofl)
 env.Install(env['CHICKENREPOSITORY'], sc_ofl_setup)
 
 # Install alias
-env.Alias('install', env['CHICKENREPOSITORY'])
+#env.Alias('install', env['CHICKENREPOSITORY'])
