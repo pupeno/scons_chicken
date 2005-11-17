@@ -1,0 +1,4 @@
+Bugs and limitations
+====================
+
+- The scanner, chicken-il.scm, can't handle files that contain non-standard reader macros (those starting with #).
