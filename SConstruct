@@ -10,18 +10,38 @@
 import os
 
 # Create an environment.
-env = Environment()
+env = Environment(tools = ["default", "chicken"], toolpath=["./"])
+
+# Check for Chicken.
+conf = Configure(env, custom_tests = {"CheckChickenProgram" : env.CheckChickenProgram})
+if not conf.CheckChickenProgram():
+    print "It seems you don't have Chicken installed or it is not"
+    print "installed correctly. For more information:"
+    print "http://www.call-with-current-continuation.org/"
+    Exit(1)
+env = conf.Finish()
 
 # Configuration.
 opts = Options(".scons-chicken.conf")
-opts.Add(PathOption("PREFIX", "Prefix directory for SCons", os.environ.get('PYTHON_ROOT',"/usr/local")))
+opts.Add(PathOption("SCONSPREFIX", "Prefix directory for SCons", os.environ.get('PYTHON_ROOT',"/usr/local")))
+opts.Add(PathOption("PREFIX", "Prefix directory for everything else", "/usr/local"))
 opts.Update(env)
 opts.Save(".scons-chicken.conf", env)
 
 # Help.
 Help(opts.GenerateHelpText(env))
 
-# Install.
-installDir = "$PREFIX/lib/scons/SCons/Tool/"
-env.Install(installDir, 'chicken.py')
-env.Alias('install', installDir)
+# Install directories.
+sconsInstallDir = "$SCONSPREFIX/lib/scons/SCons/Tool/"
+binInstallDir = "$PREFIX/bin/"
+
+# chicken.py, no build needed.
+env.Install(sconsInstallDir, 'chicken.py')
+
+# chicken-il
+chicken_il = env.Program("chicken-il.scm")
+env.Install(binInstallDir, chicken_il)
+
+# Alias for installing.
+env.Alias("install", sconsInstallDir)
+env.Alias("install", binInstallDir)

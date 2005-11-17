@@ -8,9 +8,10 @@
 # You should have received a copy of the GNU General Public License along with scons-chicken; if not, write to the Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA
 
 import SCons.Tool
+import SCons.Scanner
 import os
 from SCons.Node.FS import File
-from string import strip
+from string import strip,split
 
 def generate(env):
     env["CHICKEN"] = env.Detect("chicken") or "chicken"
@@ -21,6 +22,24 @@ def generate(env):
     # The .scm to .c builders.
     c_file, cxx_file = SCons.Tool.createCFileBuilders(env)
     c_file.add_action(".scm", SCons.Action.Action(env["CHICKENCOM"]))
+
+    def includedFiles(node, env, path):
+        for path in env['ENV']['PATH'].split(':'):
+            if os.path.exists(path + '/' + "chicken-il"):
+                includes = split(strip(os.popen("chicken-il " + str(node)).read()))
+                return includes
+        else:
+            print "Not running chicken-il, nothing to be worried about when building/installing scons-chicken, but if that is not the case, your installation may be corrupt."
+            return []
+
+    chickenScanner = SCons.Scanner.Scanner(function = includedFiles,
+                                           name = "ChickenScanner",
+                                           skeys = [".scm"],
+                                           recursive = True)
+        
+    env.Append(SCANNERS = chickenScanner)
+
+        
 
     def ChickenSetup(target = None, source = None, env = None):
         """ Function that works as a builder action wrapping chickenSetup. """
