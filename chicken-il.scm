@@ -28,13 +28,15 @@
               (char=? first-char #\t))
           '(nevermind))
          (else
-          (display "Non-supported reader macro extension found:")
-          (newline)(newline)
-          (display first-char)
-          (display (read-string 50 port))
-          (display " ...")
-          (newline)
-          (exit 1))))))
+          (with-output-to-port (current-error-port)
+            (lambda ()
+              (display "Non-supported reader macro extension found:")
+              (newline)(newline)
+              (display first-char)
+              (display (read-string 50 port))
+              (display " ...")
+              (newline)
+              (exit 1))))))))
   (call-with-input-file filename
     (lambda (file-port)
       (let process-form ((form (read file-port))) ; Read a form from form-port
