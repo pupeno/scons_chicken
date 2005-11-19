@@ -24,6 +24,9 @@
                   (read-char port)
                   '(nevermind))
                 (loop (read-char port)))))
+         ((or (char=? first-char #\f)
+              (char=? first-char #\t))
+          '(nevermind))
          (else
           (display "Non-supported reader macro extension found:")
           (newline)(newline)
