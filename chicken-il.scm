@@ -10,6 +10,28 @@
 (define rest cdr)
 
 (define (get-includes filename)
+  (set-read-syntax! #\#
+    (lambda (port)
+      (let ((first-char (read-char port)))
+;;        (display (format "Found a reader macro starting with: ~s.~n" first-char))
+        (cond
+         ((char=? first-char #\>)
+          (let loop ((c (read-char port)))
+;;            (display (format "Retriving char: ~s.~n" c))
+            (if (and (char=? c #\<)
+                     (char=? (peek-char port) #\#))
+                (begin
+                  (read-char port)
+                  '(nevermind))
+                (loop (read-char port)))))
+         (else
+          (display "Non-supported reader macro extension found:")
+          (newline)(newline)
+          (display first-char)
+          (display (read-string 50 port))
+          (display " ...")
+          (newline)
+          (exit 1))))))
   (call-with-input-file filename
     (lambda (file-port)
       (let process-form ((form (read file-port))) ; Read a form from form-port
