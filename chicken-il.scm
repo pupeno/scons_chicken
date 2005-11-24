@@ -10,43 +10,29 @@
 (define rest cdr)
 
 (define (get-includes filename)
-  (set-read-syntax! #\#
-    (lambda (port)
-      (let ((first-char (read-char port)))
-;;        (display (format "Found a reader macro starting with: ~s.~n" first-char))
-        (cond
-         ((char=? first-char #\>)
-          (let loop ((c (read-char port)))
-;;            (display (format "Retriving char: ~s.~n" c))
-            (if (and (char=? c #\<)
-                     (char=? (peek-char port) #\#))
-                (begin
-                  (read-char port)
-                  '(nevermind))
-                (loop (read-char port)))))
-         ((or (char=? first-char #\f)
-              (char=? first-char #\t))
-          '(nevermind))
-         (else
-          (with-output-to-port (current-error-port)
-            (lambda ()
-              (display "Non-supported reader macro extension found:")
-              (newline)(newline)
-              (display first-char)
-              (display (read-string 50 port))
-              (display " ...")
-              (newline)
-              (exit 1))))))))
+  (set-dispatch-read-syntax! #\>
+    (lambda (p)
+      (let loop ((c (read-char p)))
+        (cond ((eof-object? c)
+               (error "unexpected end of file"))
+              ((and (char=? c #\<)
+                    (char=? #\# (peek-char p)))
+               (read-char p)
+               #f)
+              (else (loop (read-char p)))))))
   (call-with-input-file filename
     (lambda (file-port)
       (let process-form ((form (read file-port))) ; Read a form from form-port
-        (if (eof-object? form)                    ; If it is eof
-            '()                                   ; return the empty list.
-            (if (eq? (first form) 'include)                  ; If it is 'include
-                (lset-union eq?                              ; make the union
-                            (rest form)                      ; of the include and
-                            (process-form (read file-port))) ; the rest of the includes on file.
-                (process-form (read file-port)))))))) ; Otherwise keep processing.
+        (cond
+         ((eof-object? form)                            ; If it is eof
+          '())                                          ; return the empty list.
+         ((and (pair? form)                             ; Is it a pair
+               (eq? (first form) 'include))             ; and an 'include, then
+          (lset-union eq?                               ; make the union
+                      (rest form)                       ; of the include and
+                      (process-form (read file-port)))) ; the rest of the includes on file.
+         (else                                          ; Otherwise
+          (process-form (read file-port))))))))         ; keep processing.
 
 ;; Get the list of files passed as arguments to this program.
 (define file (first (rest (argv))))
