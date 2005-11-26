@@ -140,26 +140,26 @@ def generate(env):
         # Return the generated content.
         return content
 
-    def ChickenEgg(target = None, source = None, env = None):
-        """ Build an egg. """
+    def EmitEggContents(target = None, source = None, env = None):
+        """ Return the files that should go into an egg. """
+        print "EmitEggContents"
         
         def getLeafSources(sources):
             """ Get all the sources that are leafs, not branches. """
-            eggContents = list()
+            contents = list()
             for source in sources:
                 if len(source.sources) == 0:
-                    eggContents.append(source)
-                    eggContents += source.get_found_includes(env, chickenScanner, source.path)
+                    contents.append(source)
+                    contents += source.get_found_includes(env, chickenScanner, source.path)
                 else:
-                    eggContents += getLeafSources(source.sources)
-            return eggContents
+                    contents += getLeafSources(source.sources)
+            return contents
 
-        eggContents = set(getLeafSources(source))
-        for egg in eggContents:
-            print str(egg)
-        return 0
+        contents = list(set(getLeafSources(source)))
+        return target, contents
     
-    env["BUILDERS"]["ChickenEgg"] = SCons.Builder.Builder(action = ChickenEgg,
+    env["BUILDERS"]["ChickenEgg"] = SCons.Builder.Builder(action = "$TARCOM",
+                                                          emitter = EmitEggContents,
                                                           suffix = '.egg')
     
     def CheckChickenProgram(context):
