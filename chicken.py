@@ -36,10 +36,8 @@ def generate(env):
                                            name = "ChickenScanner",
                                            skeys = [".scm"],
                                            recursive = True)
-        
-    env.Append(SCANNERS = chickenScanner)
 
-        
+    env.Append(SCANNERS = chickenScanner)
 
     def ChickenSetup(target = None, source = None, env = None):
         """ Function that works as a builder action wrapping chickenSetup. """
@@ -61,7 +59,7 @@ def generate(env):
             requires = env._dict["REQUIRES"]
         else:
             requires = []
-            
+
         # Open the .setup file for writing.
         setupFile = open(str(target[0]), "w")
 
@@ -70,12 +68,12 @@ def generate(env):
 
         # Close it.
         setupFile.close()
-        
+
         return None
 
     env["BUILDERS"]["ChickenSetup"] = SCons.Builder.Builder(action = ChickenSetup,
                                                             suffix = ".setup")
-    
+
     def chickenSetup(files, documentation = None, syntax = False, requires = None):
         """ This procedure works like a builder and it builds the .setup files.
             Parameters:
@@ -105,16 +103,15 @@ def generate(env):
                 else:
                     print "Type not recognized to build .setup file."
                     return ""
-                
-                
+
             l = "(" + head
-            
+
             if isinstance(items, list):
                 for i in items:
                     l += " \"" + buildPath(i) + "\" "
             else:
                 l += " \"" + buildPath(items) + "\""
-                
+
             l += ")" 
             return l
 
@@ -143,6 +140,28 @@ def generate(env):
         # Return the generated content.
         return content
 
+    def ChickenEgg(target = None, source = None, env = None):
+        """ Build an egg. """
+        
+        def getLeafSources(sources):
+            """ Get all the sources that are leafs, not branches. """
+            eggContents = list()
+            for source in sources:
+                if len(source.sources) == 0:
+                    eggContents.append(source)
+                    eggContents += source.get_found_includes(env, chickenScanner, source.path)
+                else:
+                    eggContents += getLeafSources(source.sources)
+            return eggContents
+
+        eggContents = set(getLeafSources(source))
+        for egg in eggContents:
+            print str(egg)
+        return 0
+    
+    env["BUILDERS"]["ChickenEgg"] = SCons.Builder.Builder(action = ChickenEgg,
+                                                          suffix = '.egg')
+    
     def CheckChickenProgram(context):
         """ Check if a Chicken program can be built and run. If not, try adding the libraries. """
         context.Message("Checking for building Chicken programs... ")

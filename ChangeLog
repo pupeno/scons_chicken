@@ -1,6 +1,6 @@
 0.2.0
-  * Change of philosophy: now scons-chicken is more sconish, a bit less automatic, but much more better (supressed lot's of unexpected behaviours).
-  * Don't re-compile everything; only what had changed.
+  * Change of philosophy: now scons-chicken is more sconish, a bit less automatic, but much better (supressed lot's of unexpected behaviours).
+  * Don't re-compile everything; only what changed.
   * Added scanner (based on chicken-il, provided by scons-chicken as well) to recompile sources that include other files that have changed.
 
 0.1.1

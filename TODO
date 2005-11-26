@@ -1,3 +1,2 @@
-- Make support for automatic generation of eggs.
-- Add the files to be on the directories, like the free software directory and all that.
+- Clean up for 0.2.0
 - Release scons-chicken 0.2.0 when there's nothing else above this line.
