@@ -27,3 +27,6 @@ env.Install('/usr/bin/', sc_ofp)
 
 # Install alias.
 env.Alias('install', '/usr/bin/')
+
+# Build an egg
+env.ChickenEgg(sc_ofp)

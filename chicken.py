@@ -142,7 +142,6 @@ def generate(env):
 
     def EmitEggContents(target = None, source = None, env = None):
         """ Return the files that should go into an egg. """
-        print "EmitEggContents"
         
         def getLeafSources(sources):
             """ Get all the sources that are leafs, not branches. """

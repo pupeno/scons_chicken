@@ -31,3 +31,6 @@ env.Install(env['CHICKENREPOSITORY'], sc_mfl_setup)
 
 # Install alias.
 #env.Alias('install', env['CHICKENREPOSITORY'])
+
+# Build an egg
+env.ChickenEgg(sc_mfl)

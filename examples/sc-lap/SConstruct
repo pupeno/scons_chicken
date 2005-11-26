@@ -35,6 +35,8 @@ lib.Install(lib["CHICKENREPOSITORY"], sc_lapl_setup)
 # Install alias
 #lib.Alias("install", env["CHICKENREPOSITORY"])
 
+# Build an egg.
+lib.ChickenEgg(sc_lapl)
 
 # Check if a Chicken program can be built (and try to alter the environment for that porpouse).
 conf = Configure(prg, custom_tests = {"CheckChickenProgram" : prg.CheckChickenProgram})
@@ -50,3 +52,6 @@ prg.Install("/usr/bin/", sc_lapp)
 
 # Install alias
 #prg.Alias("install", "/usr/bin/")
+
+# Build an egg.
+lib.ChickenEgg(sc_lapp)
