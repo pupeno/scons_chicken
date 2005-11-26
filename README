@@ -3,15 +3,25 @@ Scons-chicken
 
 Scons-chicken is an add-on for SCons (http://www.scons.org), a building system (much like make and autotools, all in one), that adds support for Chicken (http://www.call-with-current-continuation.org/), a Scheme-to-C compiler.
 
+Requirements
+------------
+To compile and install this extension you'll need:
+- SCons, because that is the build tool used. More on http://www.scons.org.
+- Chicken, because thes extension includes a helper program. More on http://www.call-with-current-continuation.org/.
+
 Installation
 ------------
-To install it you'll need SCons (http://www.scons.org) and all you need is to run:
- scons install
-and it will install chicken.py on /usr/lib/scons/Scons/Tool/. If you installed SCons somewhere else, edit SConstruct and fix.
-If you know of a better fix that will work no matter where you installed SCons (that is, something that will automatically find out where to place chicken.py), then, please, tell me about it (pupeno@pupeno.com).
+Find out the prefix of your SCons installation. Search for paths like /usr/lib/scons/SCons/Tool/, /usr/local/lib/scons/SCons/Tool/ or something similar. On those cases, the prefixes for SCons are /usr and /usr/local/ respectively.
+Decide the prefix used for chicken-il, a program that is needed by this extension and that is going to be installed.
+Once you collected those two pieces of information, run 'scons' passing them as the parameters SCONSPREFIX and PREFIX, like:
+ scons SCONSPREFIX=/usr PREFIX=/usr/local
+For more information:
+ scons --help
+Always on the root directory of scons-chicken.
 
 Usage
 -----
+Scons-chicken tries to be as SConish as possible.
 To learn how to use scons-chicken, check out the examples directories:
 - sc-sap: scons-chicken stand-alone-program (doesn't depend on any library).
 - sc-ofl: scons-chicken one-file-library.
@@ -20,6 +30,9 @@ To learn how to use scons-chicken, check out the examples directories:
 - sc-mfp: scons-chicken multiple-file-program (depends on sc-tfl).
 - sc-lap: scons-chicken library-and-file (it is a mix of ofl and ofp).
 
-Limitations
------------
-It can't create extensions of multiple libraries (but it can create libraries of multiple files).
+ChickenEgg
+''''''''''
+This builders helps creating an Egg, the Chicken extensions. 
+It doesn't create a .setup file, that is still your task (an automatig .setup generation may be added in the future). This builder tars the sources. 
+The good thing abouth this builder is that you can pass the generated file of a compilation and get the right sources packaged (even those included and not compiled directly!).
+For more information, see the example.
