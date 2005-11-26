@@ -2,6 +2,7 @@
   * Change of philosophy: now scons-chicken is more sconish, a bit less automatic, but much better (supressed lot's of unexpected behaviours).
   * Don't re-compile everything; only what changed.
   * Added scanner (based on chicken-il, provided by scons-chicken as well) to recompile sources that include other files that have changed.
+  * Added builder ChickenEgg to build eggs (Chicken packages).
 
 0.1.1
   * Make it possible to compile a library and a program with one SConstruct.
