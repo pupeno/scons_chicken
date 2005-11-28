@@ -26,7 +26,7 @@ sc_ofl = env.SharedLibrary("sc-ofl.scm", SHLIBPREFIX="")
 env.Install(env['CHICKENREPOSITORY'], sc_ofl)
 
 # Setup file for sc-ofl.
-sc_ofl_setup = env.ChickenSetup(sc_ofl)
+sc_ofl_setup = env.ChickenSetup(sc_ofl, meta = {"version" : [0, 1, 99]})
 env.Install(env['CHICKENREPOSITORY'], sc_ofl_setup)
 
 # Install alias

@@ -26,7 +26,8 @@ sc_mfl = env.SharedLibrary("sc-mfl", ["sc-mfl1.scm", "sc-mfl2.scm"], SHLIBPREFIX
 env.Install(env['CHICKENREPOSITORY'], sc_mfl)
 
 # setup file for sc-mfl.
-sc_mfl_setup = env.ChickenSetup(sc_mfl, meta = { "requires" : ["sc-ofl"]})
+sc_mfl_setup = env.ChickenSetup(sc_mfl, meta = { "requires" : ["sc-ofl"],
+                                                 "version" : [0, 1, 99]})
 env.Install(env['CHICKENREPOSITORY'], sc_mfl_setup)
 
 # Install alias.
