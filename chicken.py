@@ -120,7 +120,7 @@ def generate(env):
         content = "("
 
         # Make a list of the sources, the .so files. All located on CHICKENREPOSITOR.
-        content += makeLispList("files", files, env["CHICKENREPOSITORY"])
+        content += makeLispList("files", files + [documentation], env["CHICKENREPOSITORY"])
 
         # Add the documentation.
         if documentation:
