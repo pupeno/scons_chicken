@@ -26,8 +26,9 @@ def generate(env):
 
     def includedFiles(node, env, path):
         for path in env['ENV']['PATH'].split(':'):
-            if os.path.exists(path + '/' + "chicken-il"):
-                includes = split(strip(os.popen("chicken-il " + str(node)).read()))
+            cil = path + '/' + "chicken-include-list"
+            if os.path.exists(cil):
+                includes = split(strip(os.popen(cil + " " + str(node)).read()))
                 return includes
         else:
             print "Not running chicken-il, nothing to be worried about when building/installing scons-chicken, but if that is not the case, your installation may be corrupt."

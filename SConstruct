@@ -38,9 +38,9 @@ binInstallDir = "$PREFIX/bin/"
 # chicken.py, no build needed.
 env.Install(sconsInstallDir, 'chicken.py')
 
-# chicken-il
-chicken_il = env.Program("chicken-il.scm")
-env.Install(binInstallDir, chicken_il)
+# chicken-include-list
+cil = env.Program("chicken-include-list.scm")
+env.Install(binInstallDir, cil)
 
 # Alias for installing.
 env.Alias("install", sconsInstallDir)
