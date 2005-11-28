@@ -14,6 +14,7 @@ from SCons.Node.FS import File
 from string import strip,split
 
 def generate(env):
+    env["CSI"] = env.Detect("csi") or "csi"
     env["CHICKEN"] = env.Detect("chicken") or "chicken"
     env["CHICKENFLAGS"] = "-dynamic -feature chicken-compile-shared -feature compiling-extension"
     env["CHICKENREPOSITORY"] = strip(os.popen("chicken-setup -repository").read()) + "/"
