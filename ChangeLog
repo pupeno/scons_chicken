@@ -3,6 +3,7 @@
   * Don't re-compile everything; only what changed.
   * Added scanner (based on chicken-il, provided by scons-chicken as well) to recompile sources that include other files that have changed.
   * Added builder ChickenEgg to build eggs (Chicken packages).
+  * Better handling of meta-information of .setup files.
 
 0.1.1
   * Make it possible to compile a library and a program with one SConstruct.
