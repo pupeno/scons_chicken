@@ -14,7 +14,7 @@
     (lambda (p)
       (let loop ((c (read-char p)))
         (cond ((eof-object? c)
-               (error "unexpected end of file"))
+               (error 'get-includes "unexpected end of file"))
               ((and (char=? c #\<)
                     (char=? #\# (peek-char p)))
                (read-char p)
@@ -37,9 +37,11 @@
 ;; Get the list of files passed as arguments to this program.
 (define file (first (rest (argv))))
 
-;; Get a list of the extensions needed by those files.
-(define includes (get-includes file))
-
-;; Print the list of includes with no parenthesis and separated by spaces.
-(display (string-join includes " "))
-(newline)
+;; Check if the file exists. It is not an error because it is ok to include a file that doesn't exists and gets generated latter (is it ?). This is the case of chicken-syntax-case.
+(when (file-exists? file)
+  ;; Get a list of the extensions needed by those files.
+  (define includes (get-includes file))
+  
+  ;; Print the list of includes with no parenthesis and separated by spaces.
+  (display (string-join includes " "))
+  (newline))
