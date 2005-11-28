@@ -42,30 +42,17 @@ def generate(env):
 
     def ChickenSetup(target = None, source = None, env = None):
         """ Function that works as a builder action wrapping chickenSetup. """
-
-        # Do we have documentation ?
-        if env._dict.has_key("DOCUMENTATION"):
-            documentation = env._dict["DOCUMENTATION"]
-        else:
-            documentation = ""
-
-        # Is this a syntax extension ?
-        if env._dict.has_key("SYNTAX"):
-            syntax = env._dict["SYNTAX"]
-        else:
-            syntax = False
-
-        # What should we require ?
-        if env._dict.has_key("REQUIRES"):
-            requires = env._dict["REQUIRES"]
-        else:
-            requires = []
+        
+        # Meta information passed to us.
+        meta = None
+        if env._dict.has_key("meta"):
+            meta = env._dict["meta"]
 
         # Open the .setup file for writing.
         setupFile = open(str(target[0]), "w")
 
         # Generate and write its content.
-        setupFile.write(chickenSetup(source, documentation, syntax, requires))
+        setupFile.write(chickenSetup(source, meta))
 
         # Close it.
         setupFile.close()
@@ -75,7 +62,7 @@ def generate(env):
     env["BUILDERS"]["ChickenSetup"] = SCons.Builder.Builder(action = ChickenSetup,
                                                             suffix = ".setup")
 
-    def chickenSetup(files, documentation = None, syntax = False, requires = None):
+    def chickenSetup(files, meta = None):
         """ This procedure works like a builder and it builds the .setup files.
             Parameters:
             1. Name or list of names of the .so files that will be linked from the setup file.
@@ -92,26 +79,22 @@ def generate(env):
                 Prefix is an optional parameter that will be prepended to each item
                 on the list."""
 
-            def buildPath(item):
-                """ Procedure that builds a path using the prefix and a string or
-                    File object."""
+            def prepareObject(item):
+                """ Prepares the object to be output as a string. If there's a prefix, try to use it. """
                 if isinstance(item, str):
-                    return prefix + item
-                elif isinstance(item, list):
-                    return prefix + str(item[0])
+                    return "\"" + prefix + item + "\""
                 elif isinstance(item, File):
-                    return prefix + item.name
+                    return "\"" + prefix + item.name + "\""
                 else:
-                    print "Type not recognized to build .setup file."
-                    return ""
-
+                    return str(item)
+                
             l = "(" + head
 
             if isinstance(items, list):
                 for i in items:
-                    l += " \"" + buildPath(i) + "\" "
-            else:
-                l += " \"" + buildPath(items) + "\""
+                    l += " " + prepareObject(i)
+            elif items is not None:
+                l += " " + prepareObject(items)
 
             l += ")" 
             return l
@@ -119,22 +102,14 @@ def generate(env):
         # Open the list (a .setup is a list).
         content = "("
 
-        # Make a list of the sources, the .so files. All located on CHICKENREPOSITOR.
-        content += makeLispList("files", files + [documentation], env["CHICKENREPOSITORY"])
+        # Make a list of installed files. All located on CHICKENREPOSITORY.
+        content += makeLispList("files", files, env["CHICKENREPOSITORY"])
 
-        # Add the documentation.
-        if documentation:
-            content += "\n(documentation \"" + documentation + "\")"
-
-        # Is this a syntax extension ?
-        if syntax == True:
-            content += "\n(syntax)"
-
-        # What other extensions are necesary by this one ?
-        if requires:
-            # Make a list of extensions.
-            content += "\n" + makeLispList("requires", requires)
-
+        # Create the rest of the meta-information.
+        if meta:
+            for k in meta:
+                content += "\n" + makeLispList(k, meta[k])
+            
         # Close the list.
         content += ")\n"
 

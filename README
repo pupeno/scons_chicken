@@ -30,6 +30,12 @@ To learn how to use scons-chicken, check out the examples directories:
 - sc-mfp: scons-chicken multiple-file-program (depends on sc-tfl).
 - sc-lap: scons-chicken library-and-file (it is a mix of ofl and ofp).
 
+ChickenSetup
+''''''''''''
+This builders helps creating the .setup file needed to be installed along extensions.
+The first parameter can be the name of the .setup or can be omited (like in any other sane builder). The second parameter (or first if the real first is omited) is a list of the files to be referenced (on files) on the .setup. That list can contain strings or File objects.
+Optionally, a parameter named meta can be passed with a dictionary of the rest of the metainformation. Any value can be a string, or list, or number. If it is None, nothing will be output (thus "syntax" : None, will result in (syntax)).
+
 ChickenEgg
 ''''''''''
 This builders helps creating an Egg, the Chicken extensions. 
