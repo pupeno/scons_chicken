@@ -14,11 +14,11 @@ env = Environment(tools = ["default", "chicken"], toolpath=["../../"])
 
 # Check if a Chicken program can be built (and try to alter the environment for that porpouse).
 conf = Configure(env, custom_tests = {"CheckChickenProgram" : env.CheckChickenProgram})
-if not conf.CheckChickenProgram():
-    print "It seems you don't have Chicken installed or it is not"
-    print "installed correctly. For more information:"
-    print "http://www.call-with-current-continuation.org/"
-    Exit(1)
+#if not conf.CheckChickenProgram():
+#    print "It seems you don't have Chicken installed or it is not"
+#    print "installed correctly. For more information:"
+#    print "http://www.call-with-current-continuation.org/"
+#    Exit(1)
 env = conf.Finish()
 
 # sc-sap (executable binary) made of sc-sap.scm.
@@ -28,5 +28,5 @@ env.Install('/usr/bin/', sc_sap)
 # Install alias.
 #env.Alias('install', '/usr/bin/')
 
-# Build an egg
-env.ChickenEgg(sc_sap)
+# Build an egg. It doesn't really make sense because eggs are only for libraries, not for programs. Another reason of why Eggs taste bad.
+#env.ChickenEgg(sc_sap)
