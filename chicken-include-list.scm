@@ -10,16 +10,16 @@
 (define rest cdr)
 
 (define (get-includes filename)
-  (set-dispatch-read-syntax! #\>
-    (lambda (p)
-      (let loop ((c (read-char p)))
-        (cond ((eof-object? c)
-               (error 'get-includes "unexpected end of file"))
-              ((and (char=? c #\<)
-                    (char=? #\# (peek-char p)))
-               (read-char p)
-               #f)
-              (else (loop (read-char p)))))))
+;;   (set-dispatch-read-syntax! #\>
+;;     (lambda (p)
+;;       (let loop ((c (read-char p)))
+;;         (cond ((eof-object? c)
+;;                (error 'get-includes "unexpected end of file"))
+;;               ((and (char=? c #\<)
+;;                     (char=? #\# (peek-char p)))
+;;                (read-char p)
+;;                #f)
+;;               (else (loop (read-char p)))))))
   (call-with-input-file filename
     (lambda (file-port)
       (let process-form ((form (read file-port))) ; Read a form from form-port
