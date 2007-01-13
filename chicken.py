@@ -22,6 +22,7 @@ def generate(env):
     #env["CHICKENREPOSITORY"] = strip(os.popen("chicken-setup -repository").read()) + "/"
     env["CHICKENCOM"] = "$CHICKEN $CHICKENFLAGS $SOURCE -output-file $TARGET"
     
+    
     ccflags =  SCons.Util.CLVar(os.popen("csc -cflags").read())
     linkflags = SCons.Util.CLVar(os.popen("csc -ldflags").read())
     libs = os.popen("csc -libs").read().strip().replace("-l", "").split()
@@ -33,6 +34,7 @@ def generate(env):
     # The .scm to .c builders.
     c_file, cxx_file = SCons.Tool.createCFileBuilders(env)
     c_file.add_action(".scm", SCons.Action.Action(env["CHICKENCOM"]))
+    
     
     #def includedFiles(node, env, path):
     #    for path in env["ENV"]["PATH"].split(":"):
@@ -147,16 +149,17 @@ def generate(env):
                                                           #emitter = EmitEggContents,
                                                           #suffix = ".egg")
     
-    #def CheckChickenProgram(context):
-        #""" Check if a Chicken program can be built and run. If not, try adding the libraries. """
-        #context.Message("Checking for building Chicken programs... ")
-        #result = context.TryRun("(display (+ 1 2))", ".scm")
-        #if not result[0]:
+    def CheckChickenProgram(context):
+        """ Check if a Chicken program can be built and run. If not, try adding the libraries. """
+        context.Message("Checking for building Chicken programs... ")
+        result = context.TryRun("(display (+ 1 2))", ".scm")
+        if not result[0]:
             #context.env.ParseConfig("chicken-config -cflags -libs")
-            #result = context.TryRun("(display (+ 1 2))", ".scm")
+            result = context.TryRun("(display (+ 1 2))", ".scm")
             
-        #context.Result(result[0])
-        #return result[0]
+        context.Result(result[0])
+        return result[0]
+    env.CheckChickenProgram = CheckChickenProgram
 
     #def CheckChickenLibrary(context):
         #""" Check if a Chicken library can be built after adding the libraries. """
@@ -166,9 +169,6 @@ def generate(env):
         #result = context.TryBuild(context.env.SharedLibrary, "(display (+ 1 2))", ".scm")
         #context.Result(result)
         #return result
-
-    ## Export the checkers.
-    #env.CheckChickenProgram = CheckChickenProgram
     #env.CheckChickenLibrary = CheckChickenLibrary
     
 def exists(env):
