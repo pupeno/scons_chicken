@@ -52,6 +52,7 @@ def generate(env):
                                            recursive = True)
     env.Append(SCANNERS = chickenScanner)
     
+    
     def ChickenSetup(target = None, source = None, env = None):
         """ Function that works as a builder action wrapping chickenSetup. """
         
@@ -59,20 +60,20 @@ def generate(env):
         meta = None
         if env._dict.has_key("meta"):
             meta = env._dict["meta"]
-
+        
         # Open the .setup file for writing.
         setupFile = open(str(target[0]), "w")
-
+        
         # Generate and write its content.
         setupFile.write(chickenSetup(source, meta))
-
+        
         # Close it.
         setupFile.close()
-
+        
         return None
-
+    
     env["BUILDERS"]["ChickenSetup"] = SCons.Builder.Builder(action = ChickenSetup, suffix = ".setup")
-
+    
     def chickenSetup(files, meta = None):
         """ This procedure works like a builder and it builds the .setup files.
             Parameters:
@@ -81,7 +82,7 @@ def generate(env):
             documentation = Where is the HTML documentation.
             syntax = Whether (true or false) this contain syntax extensions.
             requires = other or list of other required extensions."""
-
+        
         def makeLispList(head, items, prefix = ""):
             """ This procedure builds a string that resembles a Lisp list of strings.
                 The first parameter is the header of the Lisp-like list.
@@ -89,7 +90,7 @@ def generate(env):
                 will form the Lisp-like list.
                 Prefix is an optional parameter that will be prepended to each item
                 on the list."""
-
+            
             def prepareObject(item):
                 """ Prepares the object to be output as a string. If there"s a prefix, try to use it. """
                 if isinstance(item, str):
@@ -98,35 +99,35 @@ def generate(env):
                     return "\"" + prefix + item.name + "\""
                 else:
                     return str(item)
-                
+            
             l = "(" + head
-
+            
             if isinstance(items, list):
                 for i in items:
                     l += " " + prepareObject(i)
             elif items is not None:
                 l += " " + prepareObject(items)
-
-            l += ")" 
+            
+            l += ")"
             return l
-
+        
         # Open the list (a .setup is a list).
         content = "("
-
+        
         # Make a list of installed files. All located on CHICKENREPOSITORY.
         content += makeLispList("files", files, env["CHICKENREPOSITORY"])
-
+        
         # Create the rest of the meta-information.
         if meta:
             for k in meta:
                 content += "\n" + makeLispList(k, meta[k])
-            
+        
         # Close the list.
         content += ")\n"
-
+        
         # Return the generated content.
         return content
-
+    
     def EmitEggContents(target = None, source = None, env = None):
         """ Return the files that should go into an egg. """
         
@@ -140,7 +141,7 @@ def generate(env):
                 else:
                     contents += getLeafSources(source.sources)
             return contents
-
+        
         contents = list(set(getLeafSources(source)))
         return target, contents
     
