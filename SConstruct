@@ -9,8 +9,17 @@
 
 import os
 
+# Configuration.
+options = Options("options.cache")
+options.AddOptions(
+    PathOption("SCONSPREFIX", "Prefix directory for SCons", os.environ.get("PYTHON_ROOT","/usr/local")),
+    PathOption("PREFIX", "Prefix directory for everything else", "/usr/local"))
+
 # Create an environment.
-env = Environment(tools = ["default", "chicken"], toolpath=["./"])
+env = Environment(tools = ["default", "chicken"], toolpath=["./"], options=options)
+
+# Save the options.
+options.Save(options.files[0], env)
 
 # Check for Chicken.
 conf = Configure(env, custom_tests = {"CheckChickenProgram" : env.CheckChickenProgram})
@@ -21,15 +30,8 @@ if not conf.CheckChickenProgram():
     Exit(1)
 env = conf.Finish()
 
-# Configuration.
-opts = Options(".scons-chicken.conf")
-opts.Add(PathOption("SCONSPREFIX", "Prefix directory for SCons", os.environ.get("PYTHON_ROOT","/usr/local")))
-opts.Add(PathOption("PREFIX", "Prefix directory for everything else", "/usr/local"))
-opts.Update(env)
-opts.Save(".scons-chicken.conf", env)
-
 # Help.
-Help(opts.GenerateHelpText(env))
+Help(options.GenerateHelpText(env))
 
 # Install directories.
 sconsInstallDir = "$SCONSPREFIX/lib/scons/SCons/Tool/"
