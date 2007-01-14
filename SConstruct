@@ -1,11 +1,11 @@
 # -*- coding: utf-8 -*-
 # Copyright (C) 2005 José Pablo Ezequiel "Pupeno" Fernández Silva
 #
-# This file is part of scons-chicken.
+# This file is part of SCons Chicken.
 #
-# Scons-chicken is free software; you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation; either version 2 of the License, or (at your option) any later version.
-# Scons-chicken is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License for more details.
-# You should have received a copy of the GNU General Public License along with scons-chicken; if not, write to the Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA
+# SCons Chicken is free software; you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation; either version 2 of the License, or (at your option) any later version.
+# SCons Chicken is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License for more details.
+# You should have received a copy of the GNU General Public License along with SCons Chicken; if not, write to the Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA
 
 import os
 
@@ -23,7 +23,7 @@ env = conf.Finish()
 
 # Configuration.
 opts = Options(".scons-chicken.conf")
-opts.Add(PathOption("SCONSPREFIX", "Prefix directory for SCons", os.environ.get('PYTHON_ROOT',"/usr/local")))
+opts.Add(PathOption("SCONSPREFIX", "Prefix directory for SCons", os.environ.get("PYTHON_ROOT","/usr/local")))
 opts.Add(PathOption("PREFIX", "Prefix directory for everything else", "/usr/local"))
 opts.Update(env)
 opts.Save(".scons-chicken.conf", env)
@@ -36,7 +36,7 @@ sconsInstallDir = "$SCONSPREFIX/lib/scons/SCons/Tool/"
 binInstallDir = "$PREFIX/bin/"
 
 # chicken.py, no build needed.
-env.Install(sconsInstallDir, 'chicken.py')
+env.Install(sconsInstallDir, "chicken.py")
 
 # chicken-include-list
 cil = env.Program("chicken-include-list.scm")
