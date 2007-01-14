@@ -171,4 +171,4 @@ def generate(env):
     env.CheckChickenLibrary = CheckChickenLibrary
     
 def exists(env):
-    return env.Detect(["csc"])
+    return env.Detect(["chicken"])
