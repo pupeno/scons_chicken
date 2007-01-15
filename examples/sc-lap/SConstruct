@@ -24,7 +24,6 @@ if not conf.CheckChickenLibrary():
     Exit(1)
 lib = conf.Finish()
 
-# sc-ofl.so made of sc-ofl.scm.
 sc_lapl = lib.SharedLibrary("sc-lapl.scm", SHLIBPREFIX="")
 lib.Install(lib["CHICKENREPOSITORY"], sc_lapl)
 

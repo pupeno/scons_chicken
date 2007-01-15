@@ -22,15 +22,20 @@ if not conf.CheckChickenLibrary():
 env = conf.Finish()
 
 # sc-ofl.so made of sc-ofl.scm.
-sc_ofl = env.SharedLibrary("sc-ofl.scm", SHLIBPREFIX="")
+sources = ["sc-ofl.scm"]
+sc_ofl = env.SharedLibrary(sources, SHLIBPREFIX="")
 env.Install(env['CHICKENREPOSITORY'], sc_ofl)
 
 # Setup file for sc-ofl.
-sc_ofl_setup = env.ChickenSetup(sc_ofl, meta = {"version" : [0, 1, 99]})
-env.Install(env['CHICKENREPOSITORY'], sc_ofl_setup)
+sc_ofl_setup = env.ChickenSetup(sources,
+                                name = "sc-ofl", # Can be omited, it would be picked from the target, sc-ofl.setup minus the .setup part.
+                                installFiles = sc_ofl + ["sc-ofl.html"],
+                                version = "0.1.99",
+                                docs = ["sc-ofl.html"])
+#env.Install(env['CHICKENREPOSITORY'], sc_ofl_setup)
 
 # Install alias
 #env.Alias('install', env['CHICKENREPOSITORY'])
 
 # Build an egg
-env.ChickenEgg(sc_ofl)
+#env.ChickenEgg(sc_ofl)

@@ -55,17 +55,31 @@ def generate(env):
     
     def ChickenSetup(target = None, source = None, env = None):
         """ Function that works as a builder action wrapping chickenSetup. """
+        if env.has_key("name"):
+            name = env["name"]
+        else:
+            name = str(target[0]).split("/")[-1].split(".")[0] # Get the name from the target, that is, "blih" out of "something/blah/bleh/blih.setup".
         
-        # Meta information passed to us.
-        meta = None
-        if env._dict.has_key("meta"):
-            meta = env._dict["meta"]
+        if env.has_key("installFiles"):
+            installFiles = env["installFiles"]
+        else:
+            installFiles = []
+
+        if env.has_key("version"):
+            version = env["version"]
+        else:
+            version = "0"
+        
+        if env.has_key("docs"):
+            docs = env["docs"]
+        else:
+            docs = []
         
         # Open the .setup file for writing.
         setupFile = open(str(target[0]), "w")
         
         # Generate and write its content.
-        setupFile.write(chickenSetup(source, meta))
+        setupFile.write(chickenSetup(source, name, installFiles, version, docs))
         
         # Close it.
         setupFile.close()
@@ -74,59 +88,74 @@ def generate(env):
     
     env["BUILDERS"]["ChickenSetup"] = SCons.Builder.Builder(action = ChickenSetup, suffix = ".setup")
     
-    def chickenSetup(files, meta = None):
-        """ This procedure works like a builder and it builds the .setup files.
-            Parameters:
-            1. Name or list of names of the .so files that will be linked from the setup file.
-            Optional parameters:
-            documentation = Where is the HTML documentation.
-            syntax = Whether (true or false) this contain syntax extensions.
-            requires = other or list of other required extensions."""
+    def chickenSetup(sources, name, installFiles, version, docs):
+        output = ""
         
-        def makeLispList(head, items, prefix = ""):
-            """ This procedure builds a string that resembles a Lisp list of strings.
-                The first parameter is the header of the Lisp-like list.
-                The second parameter is either a string or a list of strings that
-                will form the Lisp-like list.
-                Prefix is an optional parameter that will be prepended to each item
-                on the list."""
-            
-            def prepareObject(item):
-                """ Prepares the object to be output as a string. If there"s a prefix, try to use it. """
-                if isinstance(item, str):
-                    return "\"" + prefix + item + "\""
-                elif isinstance(item, File):
-                    return "\"" + prefix + item.name + "\""
-                else:
-                    return str(item)
-            
-            l = "(" + head
-            
-            if isinstance(items, list):
-                for i in items:
-                    l += " " + prepareObject(i)
-            elif items is not None:
-                l += " " + prepareObject(items)
-            
-            l += ")"
-            return l
+        for source in sources:
+            output += "(compile -s -O2 -d1 %s)" % source
         
-        # Open the list (a .setup is a list).
-        content = "("
-        
-        # Make a list of installed files. All located on CHICKENREPOSITORY.
-        content += makeLispList("files", files, env["CHICKENREPOSITORY"])
-        
-        # Create the rest of the meta-information.
-        if meta:
-            for k in meta:
-                content += "\n" + makeLispList(k, meta[k])
-        
-        # Close the list.
-        content += ")\n"
-        
-        # Return the generated content.
-        return content
+        output += "\n(install-extension"
+        output += "\n    ; Name of your extension:"
+        output += "\n    '%s" % name
+        output += "\n    ; Files to install for your extension:"
+        output += "\n    '(%s)" % " ".join(map(lambda x: "\"" + str(x) +"\"", installFiles))
+        output += "\n    ; Assoc list with properties for your extension:"
+        output += "\n    '((version %s)" % version
+        output += "\n      (documentation %s))" % " ".join(map(lambda x: "\"" + str(x) +"\"", docs))
+        output += ")"
+        return output + "\n"
+#        """ This procedure works like a builder and it builds the .setup files.
+#            Parameters:
+#            1. Name or list of names of the .so files that will be linked from the setup file.
+#            Optional parameters:
+#            documentation = Where is the HTML documentation.
+#            syntax = Whether (true or false) this contain syntax extensions.
+#            requires = other or list of other required extensions."""
+#        
+#        def makeLispList(head, items, prefix = ""):
+#            """ This procedure builds a string that resembles a Lisp list of strings.
+#                The first parameter is the header of the Lisp-like list.
+#                The second parameter is either a string or a list of strings that
+#                will form the Lisp-like list.
+#                Prefix is an optional parameter that will be prepended to each item
+#                on the list."""
+#            
+#            def prepareObject(item):
+#                """ Prepares the object to be output as a string. If there"s a prefix, try to use it. """
+#                if isinstance(item, str):
+#                    return "\"" + prefix + item + "\""
+#                elif isinstance(item, File):
+#                    return "\"" + prefix + item.name + "\""
+#                else:
+#                    return str(item)
+#            
+#            l = "(" + head
+#            
+#            if isinstance(items, list):
+#                for i in items:
+#                    l += " " + prepareObject(i)
+#            elif items is not None:
+#                l += " " + prepareObject(items)
+#            
+#            l += ")"
+#            return l
+#        
+#        # Open the list (a .setup is a list).
+#        content = "("
+#        
+#        # Make a list of installed files. All located on CHICKENREPOSITORY.
+#        content += makeLispList("files", files, env["CHICKENREPOSITORY"])
+#        
+#        # Create the rest of the meta-information.
+#        if meta:
+#            for k in meta:
+#                content += "\n" + makeLispList(k, meta[k])
+#        
+#        # Close the list.
+#        content += ")\n"
+#        
+#        # Return the generated content.
+#        return content
     
     def EmitEggContents(target = None, source = None, env = None):
         """ Return the files that should go into an egg. """
@@ -164,7 +193,6 @@ def generate(env):
     def CheckChickenLibrary(context):
         #""" Check if a Chicken library can be built after adding the libraries. """
         context.Message("Checking for building Chicken libraries... ")
-        # A library compiles correctly even without the right flags (in that case, it compiles, but it can't be used. So, we just add the flags.
         result = context.TryBuild(context.env.SharedLibrary, "(display (+ 1 2))", ".scm")
         context.Result(result)
         return result
