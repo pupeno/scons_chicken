@@ -1,34 +1,39 @@
-Scons-chicken
+SCons Chicken
 =============
 
-Scons-chicken is an add-on for SCons (http://www.scons.org), a building system (much like make and autotools, all in one), that adds support for Chicken (http://www.call-with-current-continuation.org/), a Scheme-to-C compiler.
+SCons Chicken is an add-on for SCons (http://www.scons.org), a building system (much like make and autotools, all in one), that adds support for Chicken (http://www.call-with-current-continuation.org/), a Scheme-to-C compiler.
 
 Requirements
 ------------
+
 To compile and install this extension you'll need:
+
 - SCons, because that is the build tool used. More on http://www.scons.org.
 - Chicken, because thes extension includes a helper program. More on http://www.call-with-current-continuation.org/.
 
 Installation
 ------------
-Find out the prefix of your SCons installation. Search for paths like /usr/lib/scons/SCons/Tool/, /usr/local/lib/scons/SCons/Tool/ or something similar. On those cases, the prefixes for SCons are /usr and /usr/local/ respectively.
-Decide the prefix used for chicken-il, a program that is needed by this extension and that is going to be installed.
-Once you collected those two pieces of information, run 'scons' passing them as the parameters SCONSPREFIX and PREFIX, like:
+Find out the prefix of your SCons installation. Search for paths like /usr/lib/scons/SCons/Tool/, /usr/local/lib/scons/SCons/Tool/ or something similar. On those cases, the prefixes for SCons are /usr and /usr/local/ respectively. Decide the prefix used for chicken-include-list, a program that is needed by this extension and that is going to be installed. Once you collected those two pieces of information, run 'scons' passing them as the parameters SCONSPREFIX and PREFIX, like::
+
  scons SCONSPREFIX=/usr PREFIX=/usr/local
-For more information:
+
+For more information::
+
  scons --help
-Always on the root directory of scons-chicken.
+
+Always on the root directory of SCons Chicken.
 
 Usage
 -----
-Scons-chicken tries to be as SConish as possible.
-To learn how to use scons-chicken, check out the examples directories:
-- sc-sap: scons-chicken stand-alone-program (doesn't depend on any library).
-- sc-ofl: scons-chicken one-file-library.
-- sc-mfl: scons-chicken multiple-file-library (depends on sc-ofl).
-- sc-ofp: scons-chicken one-file-program.
-- sc-mfp: scons-chicken multiple-file-program (depends on sc-tfl).
-- sc-lap: scons-chicken library-and-file (it is a mix of ofl and ofp).
+
+SCons Chicken tries to be as SConish as possible. To learn how to use SCons Chicken, check out the examples directories:
+
+- sc-sap: SCons Chicken stand-alone-program (doesn't depend on any library).
+- sc-ofl: SCons Chicken one-file-library.
+- sc-mfl: SCons Chicken multiple-file-library (depends on sc-ofl).
+- sc-ofp: SCons Chicken one-file-program.
+- sc-mfp: SCons Chicken multiple-file-program (depends on sc-tfl).
+- sc-lap: SCons Chicken library-and-file (it is a mix of ofl and ofp).
 
 ChickenSetup
 ''''''''''''
@@ -38,7 +43,7 @@ Optionally, a parameter named meta can be passed with a dictionary of the rest o
 
 ChickenEgg
 ''''''''''
-This builders helps creating an Egg, the Chicken extensions. 
+This builders helps creating an Egg, the Chicken extensions.
 It doesn't create a .setup file, that is still your task (an automatig .setup generation may be added in the future). This builder tars the sources. 
 The good thing abouth this builder is that you can pass the generated file of a compilation and get the right sources packaged (even those included and not compiled directly!).
 For more information, see the example.
